@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hexo</title>
+  
+  
+  <link href="https://lyfu0814.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://lyfu0814.github.io/"/>
+  <updated>2023-11-06T08:51:24.883Z</updated>
+  <id>https://lyfu0814.github.io/</id>
+  
+  <author>
+    <name>John Doe</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>text</title>
+    <link href="https://lyfu0814.github.io/2023/11/06/text/"/>
+    <id>https://lyfu0814.github.io/2023/11/06/text/</id>
+    <published>2023-11-06T08:51:24.000Z</published>
+    <updated>2023-11-06T08:51:24.883Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+</feed>
