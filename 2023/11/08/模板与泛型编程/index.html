@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lyfu0814.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在泛型编程中，在编译时就能获知类型； 模板是C++中泛型编程的基础，一个模板就是一个创建类或函数的蓝图或者公式。 标准库算法都是函数模板，标准库容器都是类模板。  函数模板 一个函数模板就是一个公式，可以用来生成针对特定类型的函数版本 1234567template&lt;typename T&gt;    int compare(const T &amp;v1,const T &amp;v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模板与泛型编程">
+<meta property="og:url" content="https://lyfu0814.github.io/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="HerTech">
+<meta property="og:description" content="在泛型编程中，在编译时就能获知类型； 模板是C++中泛型编程的基础，一个模板就是一个创建类或函数的蓝图或者公式。 标准库算法都是函数模板，标准库容器都是类模板。  函数模板 一个函数模板就是一个公式，可以用来生成针对特定类型的函数版本 1234567template&lt;typename T&gt;    int compare(const T &amp;v1,const T &amp;v">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-08T03:08:20.000Z">
+<meta property="article:modified_time" content="2023-11-08T03:30:04.775Z">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://lyfu0814.github.io/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lyfu0814.github.io/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/","path":"2023/11/08/模板与泛型编程/","title":"模板与泛型编程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>模板与泛型编程 | HerTech</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="HerTech" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HerTech</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/uploads/logo.jpg" alt="HerTech">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">函数模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B1%BB%E6%A8%A1%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">类模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E5%AE%9E%E5%8F%82%E6%8E%A8%E6%96%AD"><span class="nav-number">3.</span> <span class="nav-text">模板实参推断</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E7%B1%BB%E5%92%8C%E6%A8%A1%E6%9D%BF%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.</span> <span class="nav-text">模板类和模板函数的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E8%BD%BD%E4%B8%8E%E5%87%BD%E6%95%B0%E6%A8%A1%E6%9D%BF"><span class="nav-number">5.</span> <span class="nav-text">重载与函数模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF"><span class="nav-number">6.</span> <span class="nav-text">可变参数模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E7%89%B9%E4%BE%8B%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">模板特例化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OOP-vs-GP"><span class="nav-number">8.</span> <span class="nav-text">OOP vs. GP</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">uu的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_42659457" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_42659457" rel="noopener me" target="_blank"><i class="csdn fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lyfu0814.github.io/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HerTech">
+      <meta itemprop="description" content="uu的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="模板与泛型编程 | HerTech">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          模板与泛型编程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-08 11:08:20 / 修改时间：11:30:04" itemprop="dateCreated datePublished" datetime="2023-11-08T11:08:20+08:00">2023-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/C-%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">C++总结</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><span id="more"></span>
+
+<ul>
+<li>在泛型编程中，<strong>在编译时</strong>就能获知类型；</li>
+<li>模板是C++中泛型编程的基础，一个模板就是一个创建类或函数的蓝图或者公式。</li>
+<li><strong>标准库算法都是函数模板，标准库容器都是类模板</strong>。</li>
+</ul>
+<h5 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h5><ul>
+<li><p>一个函数模板就是一个公式，可以用来生成针对特定类型的函数版本</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T &amp;v1,<span class="type">const</span> T &amp;v2)</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (v1 &lt; v2) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (v1 &gt; v2) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译器使用<strong>推断出的模板参数</strong>来实例化出一个特定版本的函数</li>
+<li>模板参数可以是模板类型或非模板类型</li>
+</ul>
+</li>
+<li><p>主要用于创建通用的、适用于多种数据类型的函数。常用于实现独立于类型的算法，如排序、查找等（<code>std::sort</code> 和 <code>std::find</code>）。</p>
+</li>
+<li><p><strong>模板编译</strong></p>
+<ul>
+<li>当编译器遇到一个模板定义时，它并不生成代码，<strong>只有当实例化出模板的一个特定版本时，编译器才会生成代码</strong></li>
+<li>函数模板和类模板成员函数的定义通常放在头文件中</li>
+</ul>
+</li>
+</ul>
+<h5 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h5><ul>
+<li><p>编译器不能为类模板推断模板参数类型，为了使用类模板（和我们以前使用模板一样），必须在模板名后的尖括号中提供用来代替模板参数的模板实参列表</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; vec;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当我们使用一个类模板时，必须提供额外信息即<strong>显式模板实参列表</strong>，它们被绑定到模板参数，编译器通过使用这些<strong>模板实参</strong>实例化出特定的类</li>
+</ul>
+</li>
+<li><p>主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类。</p>
+</li>
+<li><p>类模板的成员函数</p>
+<ul>
+<li><p>可以在类模板内部也可以在类模板外部定义其成员函数，定义在类模板内的成员函数被隐式声明为内联函数</p>
+<ul>
+<li>类模板成员函数的实例化：默认情况下，对于一个实例化了的类模板，其成员只有在使用时才被实例化。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>模板类的每个 static 数据成员必须有且仅有一个定义，但是，类模板的每个实例都有<strong>各自独享的</strong> static 对象</p>
+</li>
+<li><p>模板参数</p>
+<ul>
+<li>一个模板参数名的可用范围是其声明之后，至模板声明或定义结束之前；</li>
+<li>模板参数会隐藏外层作用域中声明的相同名字；</li>
+<li>与大多数其他上下文不同，在模板内不能重用模板参数名；</li>
+<li><strong>模板声明</strong>必须包含模板参数</li>
+</ul>
+</li>
+<li><p>使用类的类型成员</p>
+<ul>
+<li><p>可以通过使用作用域运算符（::）来访问 static 成员和类型成员；</p>
+</li>
+<li><p>默认情况下，C++语言假定通过作用域运算符访问的名字不是类型，因此若希望使用一个模板类型参数的类型成员，就必须显式使用 <strong>typename关键字</strong>告诉编译器该名字是一个类型而非 static 成员；</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">typename</span> T::value_type <span class="title">top</span><span class="params">(<span class="type">const</span> T&amp; c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!c.<span class="built_in">empty</span>())</span><br><span class="line">		<span class="keyword">return</span> c.<span class="built_in">back</span>();</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">typename</span> T::<span class="built_in">value_type</span>();<span class="comment">//表示值初始化的一个变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>控制实例化</p>
+<ul>
+<li><p>由于模板使用时才会进行实例化，如果在多个独立编译的源文件中都使用了相同的模板，并且提供了一样的模板参数时，每一个源文件就都会有一个该模板的实例造成额外开销。</p>
+</li>
+<li><p>解决办法，显式实例化，当编译器遇到extern声明时，它不会在本文件中生成实例化代码；将一个实例化声明为extern就表示承诺在程序其他位置有该实例化的一个非extern声明（定义）；</p>
+</li>
+<li><p>对于给定的一个实例化版本，可能有多个extern声明，但是必须只有一个定义</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板实参推断"><a href="#模板实参推断" class="headerlink" title="模板实参推断"></a>模板实参推断</h5><ul>
+<li><p>编译器确定实例化哪个函数模板的过程，编译器检查使用模板参数的实参的类型，将这些类型或值绑定到模板参数，来自动实例化一个函数版本。</p>
+</li>
+<li><p>应用于函数模板的类型转换包括以下两项（对实参进行转换）</p>
+<ul>
+<li>const 转换：可以将一个非 const 对象的引用（或指针）传递给一个 const 的引用（或指针）实参</li>
+<li>数组或函数指针转换：一个数组实参可以转换为一个指向其首元素的指针，一个函数实参可以转换为一个该函数类型的指针</li>
+<li>其他类型转换，如算数转换、派生类向基类的转换、用户定义的转换，都不能应用于函数模板</li>
+<li>如果函数参数类型不是模板参数，则对实参进行正常的类型转换</li>
+</ul>
+</li>
+<li><p>当一个模板类型参数用作多个函数形参的类型时，实参必须有相同的类型。<strong>如果推断出来的类型不匹配，调用是错误的</strong>；</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> lhg;</span><br><span class="line"><span class="built_in">compare</span>(lng, <span class="number">1024</span>);<span class="comment">//错误，不能实例化compare(long, int)</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//如果希望函数实参可以进行正常的类型转换，可以将函数模板定义为两个类型参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> B&gt;</span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">flexibleCompare</span><span class="params">(<span class="type">const</span> A &amp;v1, <span class="type">const</span> B &amp;v2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>...</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// 使用。</span></span><br><span class="line"><span class="type">long</span> lng;</span><br><span class="line"><span class="built_in">flexibleCompare</span>(lng, <span class="number">1024</span>);<span class="comment">//使用的是flexibleCompare(long, int)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数模板的显式实参：显式实例化</p>
+<ul>
+<li><p>显式模板实参按由左至右的顺序与对应模板参数匹配，只有尾部（最右）参数的显式模板实参才可以忽略：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2, <span class="keyword">typename</span> T3&gt;</span><br><span class="line"><span class="function">T3 <span class="title">alternative_sum</span><span class="params">(T2,T1)</span></span>;</span><br><span class="line"><span class="comment">// 此时我们必须为三个模板参数指定实参</span></span><br><span class="line"><span class="keyword">auto</span> val3 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>&gt;(i, lng);<span class="comment">//错误，不能推断第三个模板参数</span></span><br><span class="line"><span class="keyword">auto</span> val2 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>, <span class="type">int</span>, <span class="type">long</span>&gt;(i, lng);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>模板实参推断和引用</strong></p>
+<ul>
+<li><p>当一个函数参数是模板类型参数的一个普通（左值）引用时，只能传递一个左值（如一个变量或一个返回引用类型的表达式），实参可以是 const 类型也可以不是；</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f1</span><span class="params">(T&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f1</span>(i);	<span class="comment">//i 是一个 int；模板参数类型T是 int</span></span><br><span class="line"><span class="built_in">f1</span>(ci);	<span class="comment">//ci 是一个 const int；模板参数T是 const int</span></span><br><span class="line"><span class="built_in">f1</span>(<span class="number">5</span>);	<span class="comment">//错误：实参必须是一个左值</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若一个函数参数是 const T&amp;，可以传递任何类型实参（一个对象、一个临时对象或一个字面常量值），当函数参数本身是 const 时，T 的类型推断结果不会是一个 const 类型，因为 const 已经是函数类型的一部分</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f2</span><span class="params">(<span class="type">const</span> T&amp;)</span></span>;	</span><br><span class="line"><span class="built_in">f2</span>(i);	<span class="comment">//i 是一个 int，模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(ci);	<span class="comment">//ci 是一个 const int，但模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(<span class="number">5</span>);	<span class="comment">//一个 const &amp; 参数可以绑定到一个右值，T 是 int</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当一个函数参数是一个右值引用时（即形如T&amp;&amp;），可以传递给他一个右值，类型推断过程类似普通左值引用函数参数的推断过程。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f3</span><span class="params">(T&amp;&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f3</span>(<span class="number">42</span>);	<span class="comment">//实参是一个 int 类型的右值，模板参数 T 是 int</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用折叠和右值引用参数</p>
+<ul>
+<li>当我们将一个左值传递给函数的右值引用参数，且此<strong>右值引用指向模板类型参数时</strong>，编译器推断模板类型参数为<strong>实参的左值引用类型</strong>；</li>
+<li>当我们间接创建一个引用的引用，则这些引用形成了折叠，即X&amp; &amp;、X&amp; &amp;&amp;、X&amp;&amp; &amp; 都折叠成类型 X&amp;，类型X&amp;&amp; &amp;&amp; 折叠成 X&amp;&amp;；</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<ol>
+<li>T&amp; ：只能传递左值；</li>
+<li>const T&amp; :可以传递任何类型；</li>
+<li>T&amp;&amp; ：可以传递左值或右值；  （T&amp;&amp;是模板类的一种形式，它<strong>不是一个右值</strong>！）</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板类和模板函数的区别"><a href="#模板类和模板函数的区别" class="headerlink" title="模板类和模板函数的区别"></a>模板类和模板函数的区别</h5><ul>
+<li><p><strong>实现目标</strong></p>
+<ul>
+<li><p>模板类：主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类，如 <code>std::vector&lt;T&gt;</code> </p>
+</li>
+<li><p>模板函数：主要用于创建通用的、适用于多种数据类型的函数。它们通常用于实现独立于类型的算法，如排序、查找等。例如，<code>std::sort</code> 和 <code>std::find</code> 都是模板函数。</p>
+</li>
+</ul>
+</li>
+<li><p>定义方式</p>
+<ul>
+<li><p>模板类使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是类定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    // 类的成员定义</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>模板函数：模板函数也使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是函数定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">T myFunction(T a, T b) &#123;</span><br><span class="line">    // 函数实现</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>使用方式</p>
+<ul>
+<li>模板类：在使用模板类时，需要为其指定类型参数。类型参数在类名之后的尖括号 <code>&lt; &gt;</code> 中提供。例如，<code>std::vector&lt;int&gt;</code> 表示一个存储 <code>int</code> 类型元素的向量。</li>
+<li>模板函数：当调用模板函数时，通常无需显式指定类型参数。编译器会根据实际参数类型自动推导出相应的模板参数类型。</li>
+</ul>
+</li>
+</ul>
+<h5 id="重载与函数模板"><a href="#重载与函数模板" class="headerlink" title="重载与函数模板"></a>重载与函数模板</h5><ul>
+<li>函数模板可以被另一个模板或一个普通非模板函数重载，名字相同的函数必须有不同数量或类型的参数；</li>
+<li>匹配规则：如果恰有一个函数提供比任何其他函数更好的匹配，则选择此函数，但是，如果有多个函数提供同样好的匹配，则：<ul>
+<li>如果同样好的函数中只有一个是<strong>非模板函数</strong>，则选择此函数；</li>
+<li>如果同样好的函数中没有非模板，而有多个函数模板，且其中一个模板比其他模板<strong>更特例化</strong>，则选择此模板；</li>
+<li>否则，此调用有歧义。</li>
+</ul>
+</li>
+</ul>
+<h5 id="可变参数模板"><a href="#可变参数模板" class="headerlink" title="可变参数模板"></a>可变参数模板</h5><ul>
+<li><p>一个接受可变数目参数的<strong>模板函数</strong>或<strong>模板类</strong>，可变数目的参数被称为<strong>参数包</strong>，存在两种参数包：</p>
+<ul>
+<li>模板参数包：表示零个或多个模板参数；</li>
+<li>函数参数包，表示零个或多个函数参数；</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Args是一个模板参数包，rest是一个函数参数包</span></span><br><span class="line"><span class="comment">// Args表示零个或则多个模板参数列表</span></span><br><span class="line"><span class="comment">// rest表示零个零个或者多个函数参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(<span class="type">const</span> T &amp;t, <span class="type">const</span> Args&amp;... rest)</span></span>;</span><br><span class="line"><span class="comment">// 声明了foo是一个可变参数函数模板，它有一个名为T的的类型参数，和一个名为Args的模板参数包，这个包表示零个或者多个额外的类型参数。</span></span><br><span class="line"><span class="comment">// foo函数参数列表包含一个const&amp;的参数，指向T类型，还包含一个名为rest的函数参数包。</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可变参数函数通常是递归的，第一步调用处理包中的第一个实参，然后用剩余实参调用自身；</li>
+<li>为了终止递归，还需要定义一个非可变参数的函数。</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板特例化"><a href="#模板特例化" class="headerlink" title="模板特例化"></a>模板特例化</h5><ul>
+<li><p>当我们不能（或者不希望）使用模板版本时，可以定义类或者函数模板的一个版本特例化。</p>
+</li>
+<li><p>当特例化一个函数模板时，必须为原模板中的<strong>每一个模板参数</strong>提供实参；</p>
+<ul>
+<li>为了指出正在实例化一个模板，应该使用关键字 template 后跟一个空尖括号对（&lt;&gt;）,指出将为原模板所有模板参数提供实参。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T&amp;, <span class="type">const</span> T&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//compare 的特殊版本，处理字符数组的指针</span></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p1, <span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">strcmp</span>(p1, p2);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>特例化的本质是实例化一个模板，而非重载，因此特例化不影响函数匹配；</li>
+</ul>
+</li>
+<li><p>类模板的特例化不必为所有模板参数提供实参，可以只指定一部分而非所有模板参数，或是参数的一部分而非全部特性；</p>
+<ul>
+<li>我们只能部分特例化<strong>类模板</strong>，而不能部分特例化<strong>函数模板</strong>；</li>
+<li>一个类模板的部分特例化本身也是一个模板，使用它的用户还必须为那么特例化中未指定的模板参数提供实参。</li>
+</ul>
+</li>
+</ul>
+<h5 id="OOP-vs-GP"><a href="#OOP-vs-GP" class="headerlink" title="OOP vs. GP"></a>OOP vs. GP</h5><ul>
+<li><p>object-oriented programming and generic programming, 面对对象编程与泛型编程</p>
+<ul>
+<li><p>OOP企图将data和methods放在一起; </p>
+</li>
+<li><p>GP却将data和methods分开：<strong>算法</strong>通过<strong>迭代器</strong>操作<strong>容器</strong>数据;</p>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://lyfu0814.github.io/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/" title="模板与泛型编程">https://lyfu0814.github.io/2023/11/08/模板与泛型编程/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/08/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E8%A8%80/" rel="prev" title="基本语言">
+                  <i class="fa fa-angle-left"></i> 基本语言
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/08/%E6%A0%87%E5%87%86%E5%BA%93/" rel="next" title="标准库">
+                  标准库 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"></span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">55k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">50 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

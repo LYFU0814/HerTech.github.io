@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lyfu0814.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="STL六大部件（component） 容器（containers）、分配器（allocators）、算法（algorithms）、 迭代器（iterators）、适配器（adapters）、仿函数（functors）；  数据在容器（内存的事情我们不必管，由分配器支持），处理数据在算法，连接之间的桥梁是迭代器（泛化的指针）。仿函数可以处理类之间的一些操作，适配器转换。   示例 1234567">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STL体系结构">
+<meta property="og:url" content="https://lyfu0814.github.io/2023/11/08/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="HerTech">
+<meta property="og:description" content="STL六大部件（component） 容器（containers）、分配器（allocators）、算法（algorithms）、 迭代器（iterators）、适配器（adapters）、仿函数（functors）；  数据在容器（内存的事情我们不必管，由分配器支持），处理数据在算法，连接之间的桥梁是迭代器（泛化的指针）。仿函数可以处理类之间的一些操作，适配器转换。   示例 1234567">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lyfu0814.github.io/img/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20230311090017134.png">
+<meta property="article:published_time" content="2023-11-08T03:08:20.000Z">
+<meta property="article:modified_time" content="2023-11-08T03:28:22.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lyfu0814.github.io/img/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20230311090017134.png">
+
+
+<link rel="canonical" href="https://lyfu0814.github.io/2023/11/08/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lyfu0814.github.io/2023/11/08/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/","path":"2023/11/08/STL体系结构/","title":"STL体系结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>STL体系结构 | HerTech</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="HerTech" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HerTech</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/uploads/logo.jpg" alt="HerTech">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#STL%E5%85%AD%E5%A4%A7%E9%83%A8%E4%BB%B6%EF%BC%88component%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">STL六大部件（component）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%86%E9%85%8D%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">分配器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">容器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">迭代器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%BF%E5%87%BD%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">仿函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">7.</span> <span class="nav-text">适配器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#traits"><span class="nav-number">8.</span> <span class="nav-text">traits</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">uu的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_42659457" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_42659457" rel="noopener me" target="_blank"><i class="csdn fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lyfu0814.github.io/2023/11/08/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HerTech">
+      <meta itemprop="description" content="uu的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="STL体系结构 | HerTech">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STL体系结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-08 11:08:20 / 修改时间：11:28:22" itemprop="dateCreated datePublished" datetime="2023-11-08T11:08:20+08:00">2023-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/C-%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">C++总结</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><span id="more"></span>
+
+<h5 id="STL六大部件（component）"><a href="#STL六大部件（component）" class="headerlink" title="STL六大部件（component）"></a>STL六大部件（component）</h5><ul>
+<li><p>容器（containers）、分配器（allocators）、算法（algorithms）、</p>
+<p>迭代器（iterators）、适配器（adapters）、仿函数（functors）；</p>
+<blockquote>
+<p>数据在容器（内存的事情我们不必管，由分配器支持），处理数据在算法，连接之间的桥梁是迭代器（泛化的指针）。仿函数可以处理类之间的一些操作，适配器转换。</p>
+</blockquote>
+</li>
+<li><p>示例</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">stl_component</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="type">int</span> ia[<span class="number">6</span>] = &#123;<span class="number">27</span>, <span class="number">210</span>, <span class="number">12</span>, <span class="number">47</span>, <span class="number">109</span>, <span class="number">83</span>&#125;;</span><br><span class="line">  <span class="comment">//用到了容器和分配器定义一个vector</span></span><br><span class="line">  vector &lt;<span class="type">int</span>, allocator&lt;<span class="type">int</span>&gt; &gt; <span class="built_in">vi</span>(ia, ia+<span class="number">6</span>);</span><br><span class="line">  <span class="comment">//用到了算法，迭代器，函数适配器，函数对象</span></span><br><span class="line">  <span class="comment">// vi.begin()和vi.end()迭代指向vi中的元素</span></span><br><span class="line">  <span class="comment">// not1是negator，否定less的作用，变成了大于等于40的数</span></span><br><span class="line">  <span class="comment">// bind2nd绑定了less比较的第二个对象，固定在40</span></span><br><span class="line">  cout &lt;&lt; <span class="built_in">count_if</span>(vi.<span class="built_in">begin</span>(), vi.<span class="built_in">end</span>(),</span><br><span class="line">         <span class="built_in">not1</span>(<span class="built_in">bind2nd</span>(<span class="built_in">less</span>&lt;<span class="type">int</span>&gt;(), <span class="number">40</span>))) &lt;&lt; endl;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="分配器"><a href="#分配器" class="headerlink" title="分配器"></a>分配器</h5><p>*不建议单独使用分配器；</p>
+<ul>
+<li><code>operator new()</code>和底层的内存分配函数<code>malloc()</code><ul>
+<li>malloc()分配给申请内存大小的空间时会有额外的空间开销，如cookie、pad等；</li>
+<li>一般使用时由于申请的size不大，所以这些额外的空间占的比例比较大，为缺陷；</li>
+</ul>
+</li>
+<li>分配器allocator的使用：用来分配内存<ul>
+<li><code>allocate()</code>申请内存，调用<code>::operator new()</code>完成；</li>
+<li><code>deallocate()</code>回收内存，调用<code>::operator delete()</code>完成；</li>
+</ul>
+</li>
+<li>STL的分配器用于封装STL容器在内存管理上的底层细节。在C++中，其内存配置和释放如下：  <ul>
+<li>new运算分两个阶段：(1)调用allocate()配置内存;(2)调用对象构造函数construct()  构造对象内容  ；</li>
+<li>delete运算分两个阶段：(1)调用对象析构函数destroy()  ；(2)调用deallocate()释放内存</li>
+</ul>
+</li>
+<li>为了提升内存管理的效率，减少申请小内存造成的内存碎片问题，STL采用了两级配置器：<ul>
+<li>当分配的空间大小超过128字节时，会使用第一级空间配置器：直接使用malloc()、realloc()、free()函数进行内存空间的分配和释放</li>
+<li>当分配的空间大小小于128字节时，将使用第二级空间配置器：采用了内存池技术，维护16个list，通过空闲链表来管理内存。  <ul>
+<li>为自由链表的管理，把需求的内存块自动提升为8的倍数，造成内部碎片；</li>
+<li>释放后的内存块仍挂在自由链表上，不会还给操作系统。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h5><ul>
+<li>容器之间的关联不是继承，是复合关系，即会拥有某些容器的功能</li>
+</ul>
+<p><img src="/img/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/image-20230311090017134.png" alt="image-20230311090017134"></p>
+<ul>
+<li>vector<ul>
+<li>连续存储的容器，动态数组，在堆上分配空间  </li>
+<li>底层实现：数组  </li>
+<li>扩容：请求重新分配2倍大小的空间,然后将原空间元素通过复制的方式初始化新空间，再向新空间增加元素，最后析构并释放原空间，之前的迭代器会失效</li>
+<li>适用场景：经常随机访问，且不经常对非尾节点进行插入删除</li>
+<li>释放内存：erase和clear都不会释放内存，可以使用<code>swap(vec)</code>释放或清空全部内存；</li>
+<li>删除元素：采用remove一般情况下不会改变容器的大小，而pop_back()与erase()等成员函数会改变容器的大小。</li>
+<li>size得到有效元素个数，capacity得到空间容量；</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;vector为什么是1.5或者是2倍扩容？&#x3D;&#x3D;</p>
+<blockquote>
+<p>不同的编译器实现的扩容方式不一样，VS2015中以1.5倍扩容，GCC以2倍扩容。</p>
+<p>采用成倍方式扩容可保证常数的复杂度，而增加指定大小的容量只能达到O(n)的复杂度（因为每次超出都会扩容1个元素）</p>
+<p>以2倍的方式扩容，导致下一次申请的内存必然大于已释放的之前分配的内存总和，导致之前分配的内存不能再被使用</p>
+<p>eg：如分配1，2，4，8，第四次需要8，但是前三次加起来才只有7</p>
+<p>增长因子设置为(1,2)之间，多次扩容之后就可以复用之前释放的空间</p>
+<p>如果倍数超过2倍(包含2)方式扩容会存在：空间浪费较高、无法使用之前释放的内存的问题</p>
+</blockquote>
+<ul>
+<li>forward_list<ul>
+<li>动态链表，在堆上分配空间，每插入一个元数都会分配空间，每删除一个元素都会释放空间  </li>
+<li>底层：双向链表list</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;vector和list的区别&#x3D;&#x3D;</p>
+<blockquote>
+<p>1）vector底层实现是数组；list是双向链表。<br>2）vector支持随机访问，list不支持。<br>3）vector是顺序内存，list不是。<br>4）vector在中间节点进行插入删除会导致内存拷贝，list不会。  </p>
+<p>5）vector一次性分配好内存，不够时才进行2倍扩容；list每次插入新节点都会进行内存申请。<br>6）vector随机访问性能好，插入删除性能差；list随机访问性能差，插入删除性能好  </p>
+<p>vector拥有一段连续的内存空间，因此支持随机访问，如果需要高效的随即访问，而不在乎插入和删除的效率，使用vector。  </p>
+<p>list拥有一段不连续的内存空间，如果需要高效的插入和删除，而不关心随机访问，则应使用list。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;resize()和reserve()&#x3D;&#x3D;  </p>
+<blockquote>
+<p>resize()<br>改变当前容器内含有元素的数量(size())，eg:v.resize(len);v的size变为len,如果原来v的size小于len，那么容器新增（len-size）个元素，元素的值为默认为0.当v.push_back(3);之后，则是3是放在了v的末尾，即下标为len，此时容器是size为len+1；如果len比当前数目小，vector进行容量压缩，长度压缩到len大小，超出的元素进行销毁。<br>reserve()（可以避免动态扩容）<br>改变当前容器的最大容量（capacity）,它不会生成元素，只是确定这个容器允许放入多少对象，如果reserve(len)的值大于当前的capacity()，那么会重新分配一块能存len个对象的空间，然后把之前v.size()个对象通过copy construtor复制过来，销毁之前的内存；</p>
+</blockquote>
+<ul>
+<li><p>array</p>
+<ul>
+<li>把array包装成容器，然后利用指针当iterator进行操作</li>
+</ul>
+</li>
+<li><p>deque：双向队列</p>
+<ul>
+<li>deque在上层调用时表现是连续的，但是底层实现是用动态分段连续的buffer来实现的</li>
+<li>deque可以实现空间（内存）动态缩小</li>
+<li>通过迭代器（deque自己有iterator类）和操作符重载来营造连续插入或弹出的假象</li>
+<li>一个迭代器内部有四个指针：cur, first, last, node，其中前三个指针是针对buffer而言的，而node指的是当前deque中用到了哪个buffer</li>
+</ul>
+</li>
+<li><p>queue和stack</p>
+<ul>
+<li>称queue和stack为容器适配器</li>
+<li>利用deque模拟队列queue（用deque模拟stack同理）：内含一个deque并封锁某些功能</li>
+<li>stack或queue<strong>都不允许遍历，也不提供iterator</strong></li>
+<li>queue和stack的底层结构：可用list模拟，但是默认是deque，因为速度较快，queue不可选择vector做底层结构（因为vector没有<code>pop_front()</code>），stack可以选择vector做底层结构；stack和queue都不可以选择set或map作为底层结构。</li>
+</ul>
+</li>
+<li><p>红黑树（set、map）</p>
+<ul>
+<li>红黑树是关联式查找容器的底层支撑结构之一</li>
+<li>set和的底层利用Rb_tree实现，因此也是一种容器适配器；</li>
+<li>map和multimap使用红黑树实现key-data的存储，不允许改变key，但却可以改变值；</li>
+</ul>
+<p>&#x3D;&#x3D;map和set的区别，实现方式&#x3D;&#x3D;  </p>
+<blockquote>
+<p>map和set都是C++的关联容器，其底层实现都是红黑树（RB-Tree）  </p>
+<p>区别  </p>
+<p>（1）map中的元素是key-value（关键字—值）对：关键字起到索引的作用，值则表示与索引相关联的数据；Set与之相对就是关键字的简单集合，set中每个元素只包含一个关键字。<br>（2）set的迭代器是const的，不允许修改元素的值；map允许修改value，但不允许修改key。其原因是因为map和set是根据关键字排序来保证其有序性的，如果允许修改key的话，那么首先需要删除该键，然后调节平衡，再插入修改后的键值，调节平衡，如此一来，严重破坏了map和set的结构，导致iterator失效，不知道应该指向改变前的位置，还是指向改变后的位置。所以STL中将set的迭代器设置成const，不允许修改迭代器的值；而map的迭代器则不允许修改key值，允许修改value值。<br>（3）map支持下标操作，set不支持下标操作。map可以用key做下标，map的下标运算符[ ]将关键码作为下标去执行查找，如果关键码不存在，则插入一个具有该关键码和mapped_type类型默认值的元素至map中，因此下标运算符[ ]在map应用中需要慎用，const_map不能用，只希望确定某一个关键值是否存在而不希望插入元素时也不应该使用，mapped_type类型没有默认值也不应该使用。如果find能解决需要，尽可能用find。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;map中[]与find的区别？&#x3D;&#x3D;</p>
+<blockquote>
+<p>map的下标运算符[]：将关键码作为下标去执行查找，并返回对应的值；如果不存在这个关键码，就将一个具有该关键码和值类型的默认值的项插入这个map。</p>
+<p>map的find函数：用关键码执行查找，找到了返回该位置的迭代器；如果不存在这个关键码，就返回尾迭代器。</p>
+</blockquote>
+</li>
+<li><p>哈希表（unordered_set、unordered_map）</p>
+<ul>
+<li>hash table利用bucket（属于vector）和list（自定义的linked-list）来存储数据；</li>
+<li>hash function及hash code：hash function的目的：根据元素值计算出hash code，使得元素经映射之后能够足够随机，因为再被放入hush表中时，越随机越不容易发生碰撞；</li>
+<li>利用hash table实现unordered_set, unordered_multiset, unordered_map, unordered_multimap容器；</li>
+<li>hash table使用拉链法解决hush冲突</li>
+<li>bucket的数量：内置了28个质数[53, 97, 193,…,429496729]，在创建hashtable时，选择大于等于元素个数的质数作为hashtable的容量（vector的长度），其中每个bucket所维护的linked-list长度也等于hashtable的容量。如果插入hashtable的元素个数超过了bucket的容量，就要进行重建table操作，即找出下一个质数，创建新的buckets vector，重新计算元素在新hashtable的位置。</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;map与unordered_map的优缺点&#x3D;&#x3D;  </p>
+<blockquote>
+<p>对于map，其底层是基于红黑树实现的  </p>
+<p>优点如下：<br>1)有序性，这是map结构最大的优点，其元素的有序性在很多应用中都会简化很多的操作<br>2)map的查找、删除、增加等一系列操作时间复杂度稳定，都为$logn$<br>缺点如下：<br>1）查找、删除、增加等操作平均时间复杂度较慢，与n相关  </p>
+<p>对于unordered_map来说，其底层是一个哈希表  </p>
+<p>优点如下：<br>查找、删除、添加的速度快，时间复杂度为常数级O(c)<br>缺点如下：<br>因为unordered_map内部基于哈希表，以（key,value）对的形式存储，因此空间占用率高  </p>
+<p>Unordered_map的查找、删除、添加的时间复杂度不稳定，平均为O(c)，取决于哈希函数。极端情况下可能为O(n)  </p>
+</blockquote>
+<ul>
+<li>priority_queue<ul>
+<li>在插入元素时，会自动根据权值（通常是元素的实值）排列，权值最高，排在最前面</li>
+<li>默认情况下，priority_queue使用一个max-heap完成，底层容器使用的是一般为vector为底层容器，堆heap为处理规则来管理底层容器实现 。</li>
+<li>priority_queue的这种实现机制导致其不被归为容器，而是一种容器适配器</li>
+</ul>
+</li>
+</ul>
+<h5 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h5><ul>
+<li>算法通过迭代器连通容器，进行数据处理和函数运行<ul>
+<li>从语言层面上讲，容器是class template, 而算法是function template</li>
+<li>有些算法还可传入定制的准则criterion, 比如sort函数的比较函数</li>
+</ul>
+</li>
+<li>五种迭代器<ul>
+<li>随机存取迭代器：<strong>random_access_iterator_tag</strong> (array, vector, deque)；</li>
+<li>双向迭代器：<strong>bidirectional_iterator_tag</strong>(list, rb_tree)；</li>
+<li>单向迭代器：<strong>forward_iterator_tag</strong>(forward_list, hashtable可能是，要看hashtable桶中的链表是单向还是双向) ；</li>
+<li>多出来的两种input_iterator_tag和output_iterator_tag属于istream和ostream；五种之间是继承关系，同时用这种tag的方式，非简单的12345；</li>
+</ul>
+</li>
+<li>迭代器分类对算法的影响<ul>
+<li>算法的效率与算法能否判断迭代器的分类有很大关系</li>
+<li>difference()函数：根据不同的迭代器类别计算其距离</li>
+<li>copy()函数：根据迭代器的类型，所能做了很多的分支，优化到最快</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;迭代器删除元素（迭代器失效的情况）&#x3D;&#x3D;  </p>
+<blockquote>
+<p>序列容器：（vector,deque等）  </p>
+<p>使用erase(itertor)后，后边的每个元素的迭代器都会失效；</p>
+<p>后边每个元素都会往前移动一个位置，但是erase会返回下一个有效的迭代器；  </p>
+<p>关联容器：（map,set等）  </p>
+<p>使用了erase(iterator)后，当前元素的迭代器失效，但是其结构是红黑树，删除当前元素的，不会影响到下一个元素的迭代器，所以在调用erase之前，记录下一个元素的迭代器即可。  </p>
+<p>list  </p>
+<p>使用了不连续分配的内存，并且它的erase方法也会返回下一个有效的iterator，因此上面两种正确的方法都可以使用。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;迭代器和指针&#x3D;&#x3D;  </p>
+<blockquote>
+<p>Iterator模式是运用于聚合对象的一种模式，通过运用该模式，使得我们可以在不知道对象内部表示的情况下，按照一定顺序（由iterator提供的方法）访问聚合对象中的各个元素。  </p>
+<p>迭代器和指针的区别  </p>
+<p>迭代器不是指针，是类模板，表现的像指针。  </p>
+<p>他只是模拟了指针的一些功能，通过重载了指针的一些操作符，-&gt;、*、++、–等。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;迭代器++i，i++哪个更好，为什么？&#x3D;&#x3D;</p>
+<blockquote>
+<p>在 C++ 中，迭代器 ++i（前置自增）和 i++（后置自增）都可以用于遍历容器中的元素。在某些情况下，++i 是一个更好的选择，原因如下：</p>
+<ul>
+<li>性能优势： 前置自增 ++i 直接将迭代器的值加 1，然后返回自增后的迭代器。而后置自增 i++ 需要在自增之前创建并返回一个临时迭代器副本，然后再将原始迭代器的值加 1。</li>
+</ul>
+</blockquote>
+<h5 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h5><ul>
+<li>C++标准库的函数与C函数在形式上有些不同，是一种<strong>函数模板</strong>，并且与迭代器联系紧密</li>
+<li>举例<ul>
+<li>accumulate、for_each、replace，replace_if，replace_copy、count，count_if、find，find_if、sort、binary_search</li>
+</ul>
+</li>
+</ul>
+<h5 id="仿函数"><a href="#仿函数" class="headerlink" title="仿函数"></a>仿函数</h5><ul>
+<li>仿函数其实就是一个类似函数的<strong>对象</strong>（函数对象），必须重载函数调用运算符，只为算法服务</li>
+<li>标准库规定<strong>可适配的</strong>仿函数都继承了二元变量操作binary_function或一元变量操作unary_function；</li>
+<li>可适配的含义：可修改，可调整；</li>
+</ul>
+<h5 id="适配器"><a href="#适配器" class="headerlink" title="适配器"></a>适配器</h5><ul>
+<li><p>适配器用来修改一个既有的东西，如接口、参数个数、函数的名称等，但不改变这个东西的类型也不改变返回类型，即：仿函数适配器还是一个仿函数的样子；</p>
+</li>
+<li><p>适配器可以认为具有桥梁作用：把某个底层B包装下做成A交给用户使用，但是内部仍然是调用B来运作，在C++中，适配器采用复合（<strong>内含</strong>）的方式获得某种功能，非继承；</p>
+<ul>
+<li>如：仿函数适配器中内含一个仿函数，容器适配器中内含一个容器</li>
+</ul>
+</li>
+<li><p>容器适配器</p>
+<ul>
+<li>都内涵一个容器，默认为一个deque，如stack和queue</li>
+</ul>
+</li>
+<li><p>仿函数适配器</p>
+<ul>
+<li>适配器修改了仿函数的部分功能，但最终还体现为一个仿函数，因此可以继续嵌套适配器；</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//介绍了前面使用过的一个计数语句,其中用到了算法(count_if)，函数适配器(not1和bind2nd)和函数对象(less&lt;int&gt;())。</span></span><br><span class="line">    </span><br><span class="line">cout &lt;&lt; <span class="built_in">count_if</span>(vi.<span class="built_in">begin</span>(), vi.<span class="built_in">end</span>(), <span class="built_in">not1</span>(<span class="built_in">bind2nd</span>(less&lt;<span class="type">int</span>&gt;, <span class="number">40</span>)));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>not1；</li>
+<li>bind：binder1st, binder2nd这些函数都被bind函数取代，但是旧的函数依旧可以使用；<ul>
+<li>since C++11；</li>
+<li>可以绑定函数、函数对象&#x2F;仿函数、成员函数、类对象；</li>
+<li>_1、 _2…为占位符，表示第几个参数；</li>
+<li>bind可以制定一个模板参数，表示返回类型：<code>bind&lt;int&gt;(fumc, _1, _2)</code>，或者直接用auto即可；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>迭代器适配器</p>
+<ul>
+<li>reverse iterator：<code>rbegin()</code>和<code>rend()</code>；<ul>
+<li>逆向迭代器内含一个正向迭代器；</li>
+<li>对逆向迭代器取值对应于正向迭代器退一格取值；</li>
+</ul>
+</li>
+<li>inserter<ul>
+<li><code>copy()</code>本身必须有目标空间才能赋值；</li>
+<li>inserter配合copy函数，实现在foo中选定位置进行bar数组的安插，而不是原先的覆盖赋值搬移；</li>
+<li>inserter是一个辅助函数，负责类型推导，实际的insert_iterator通过**重载操作符&#x3D;**实现元素的insert动作；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="traits"><a href="#traits" class="headerlink" title="traits"></a>traits</h5><ul>
+<li>raits技法利用“内嵌型别“的编程技巧与<strong>编译器的template参数推导功能</strong>，增强C++未能提供的关于类型认证方面的能力。常用的有iterator_traits和type_traits。</li>
+<li><strong>iterator_traits</strong>方便的让外界获取：迭代器所指对象的类型、两个迭代器之间的距离、迭代器所指向的类型、迭代器所引用的类型。</li>
+<li><strong>type_traits</strong>关注类型的特性：如是否具备额默认构造函数、拷贝构造函数等。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://lyfu0814.github.io/2023/11/08/STL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/" title="STL体系结构">https://lyfu0814.github.io/2023/11/08/STL体系结构/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/08/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="内存管理">
+                  <i class="fa fa-angle-left"></i> 内存管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/08/C%E8%AF%AD%E8%A8%80%E5%87%BD%E6%95%B0%E5%BA%93%E5%8F%8A%E5%85%B6%E4%BB%96/" rel="next" title="C语言函数库及其他">
+                  C语言函数库及其他 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"></span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">55k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">50 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

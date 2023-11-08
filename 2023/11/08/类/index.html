@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lyfu0814.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="类的基本思想是数据抽象和封装，数据抽象是一种依赖于接口和实现分离的编程技术，封装实现了该分离  类的接口包括用户所能执行的操作 类的实现则包括类的成员、负责接口实现的函数以及定义类所需要的各种私有函数  访问控制 访问说明符：加强类的封装性；    访问权限 类外部 派生类 类内部    public ✔ ✔ ✔   protected ❌ ✔ ✔   private ❌ ❌ ✔     构造">
+<meta property="og:type" content="article">
+<meta property="og:title" content="类">
+<meta property="og:url" content="https://lyfu0814.github.io/2023/11/08/%E7%B1%BB/index.html">
+<meta property="og:site_name" content="HerTech">
+<meta property="og:description" content="类的基本思想是数据抽象和封装，数据抽象是一种依赖于接口和实现分离的编程技术，封装实现了该分离  类的接口包括用户所能执行的操作 类的实现则包括类的成员、负责接口实现的函数以及定义类所需要的各种私有函数  访问控制 访问说明符：加强类的封装性；    访问权限 类外部 派生类 类内部    public ✔ ✔ ✔   protected ❌ ✔ ✔   private ❌ ❌ ✔     构造">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lyfu0814.github.io/img/%E7%B1%BB/image-20230309202101230.png">
+<meta property="article:published_time" content="2023-11-08T03:08:20.000Z">
+<meta property="article:modified_time" content="2023-11-08T03:29:47.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lyfu0814.github.io/img/%E7%B1%BB/image-20230309202101230.png">
+
+
+<link rel="canonical" href="https://lyfu0814.github.io/2023/11/08/%E7%B1%BB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lyfu0814.github.io/2023/11/08/%E7%B1%BB/","path":"2023/11/08/类/","title":"类"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>类 | HerTech</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="HerTech" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">HerTech</p>
+      <i class="logo-line"></i>
+    </a>
+      <img class="custom-logo-image" src="/uploads/logo.jpg" alt="HerTech">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">访问控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">析构函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%8E%A7%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">拷贝控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A7%BB%E5%8A%A8%E6%8E%A7%E5%88%B6"><span class="nav-number">5.</span> <span class="nav-text">移动控制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E8%BD%BD"><span class="nav-number">6.</span> <span class="nav-text">重载</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">uu的博客</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_42659457" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_42659457" rel="noopener me" target="_blank"><i class="csdn fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lyfu0814.github.io/2023/11/08/%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="HerTech">
+      <meta itemprop="description" content="uu的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="类 | HerTech">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          类
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2023-11-08 11:08:20 / 修改时间：11:29:47" itemprop="dateCreated datePublished" datetime="2023-11-08T11:08:20+08:00">2023-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/C-%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">C++总结</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><span id="more"></span>
+
+<p>类的基本思想是<strong>数据抽象</strong>和<strong>封装</strong>，数据抽象是一种依赖于<strong>接口</strong>和<strong>实现</strong>分离的编程技术，封装实现了该分离</p>
+<ul>
+<li>类的接口包括用户所能执行的操作</li>
+<li>类的实现则包括类的成员、负责接口实现的函数以及定义类所需要的各种私有函数</li>
+</ul>
+<h5 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h5><ul>
+<li><p>访问说明符：加强类的封装性；</p>
+<table>
+<thead>
+<tr>
+<th>访问权限</th>
+<th>类外部</th>
+<th>派生类</th>
+<th>类内部</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>public</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>protected</td>
+<td>❌</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>private</td>
+<td>❌</td>
+<td>❌</td>
+<td>✔</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<h5 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h5><blockquote>
+<p>构造函数</p>
+<p>C++中的类需要定义与类名相同的特殊成员函数，叫做构造函数;<br>构造函数可以在定义的时候有参数，构造函数没有任何返回类型。<br>构造函数的调用: 一般情况下,C++编译器会自动调用构造函数，特殊情况下需要手工调用</p>
+</blockquote>
+<ul>
+<li><p>列表初始化  </p>
+<ul>
+<li>成员的初始化顺序，与成员的声明顺序相同，与初始化列表的位置无关  </li>
+<li>初始化列表比构造函数先执行  </li>
+<li>必须使用列表初始化的场景<ul>
+<li>类存在继承关系，派生类必须在其初始化列表中调用基类的构造函数  </li>
+<li>初始化一个引用成员或常量成员</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>构造函数注意事项</p>
+<ul>
+<li>类的数据成员不能在类的声明时候初始化，构造函数负责初始化类对象的数据成员；</li>
+<li>类可以包含多个构造函数，不同的构造函数之间必须在参数数量或参数类型上有所区别；</li>
+<li>构造函数不能被声明成const；</li>
+<li>当类没有显式地定义构造函数，编译器会为隐式地定义一个默认构造函数；</li>
+</ul>
+</li>
+<li><p>通过将构造函数声明为<strong>explicit</strong>能<strong>抑制构造函数定义的隐式转换</strong>，只对一个实参的构造函数有效</p>
+</li>
+</ul>
+<p>&#x3D;&#x3D;为什么用成员初始化列表比赋值初始化会快一些？&#x3D;&#x3D;</p>
+<blockquote>
+<ul>
+<li>赋值初始化，通过在函数体内进行赋值初始化<ul>
+<li>会产生临时对象，降低程序的效率</li>
+</ul>
+</li>
+<li>列表初始化，在冒号后使用初始化列表进行初始化<ul>
+<li>给数据成员分配内存空间时就进行初始化</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>&#x3D;&#x3D;为什么构造函数不能为虚函数？&#x3D;&#x3D;  </p>
+<blockquote>
+<p>存在虚函数时，每个对象都有一个指向虚函数的指针（vptr指针）  </p>
+<p>vptr指针指向虚函数表，执行虚函数的时候，会调用vptr指针指向的虚函数的地址。  </p>
+<p>当定义一个对象的时候，首先会分配对象内存空间，然后调用构造函数来初始化对象。vptr变量是在构造函数中进行初始化的。又因为执行虚函数需要通过vptr指针来调用。如果可以定义构造函数为虚函数，那么就会陷入先有鸡还是先有蛋的循环讨论中。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;C++如何阻止一个类被实例化？一般在什么时候将构造函数声明为private？&#x3D;&#x3D;</p>
+<blockquote>
+<p>将构造函数声明为 private 来阻止类被实例化。在以下情况会将构造函数声明为 private：</p>
+<ul>
+<li>单例模式：单例模式是一种设计模式，用于确保一个类只有一个实例。构造函数（包括拷贝构造函数）和赋值运算符需要声明为 private，以防止外部代码创建类的多个实例。在这种情况下，类通常会提供一个公共的静态成员函数用于获取类的唯一实例。</li>
+<li>工具类和静态成员函数类：有时可能需要创建一个工具类，该类只包含静态成员函数，而不需要创建对象。在这种情况下，可以将构造函数声明为 private，以防止类被实例化。这样可以确保类只用于调用静态成员函数，而不需要创建对象。</li>
+<li>阻止派生类实例化：在某些情况下，希望一个类只能作为基类，而不能被实例化。这种情况下，可以将构造函数声明为 private 或 protected。这种情况更好的实现方法是声明为纯虚函数，即构造为抽象基类。</li>
+</ul>
+</blockquote>
+<h5 id="析构函数"><a href="#析构函数" class="headerlink" title="析构函数"></a>析构函数</h5><blockquote>
+<p>析构函数：C++中的类可以定义一个特殊的成员函数清理对象<br>析构函数没有参数和没有任何返回类型<br>析构函数在对象销毁的时候自动调用<br>析构函数调用机制: C++编译器自动调用  </p>
+</blockquote>
+<ul>
+<li><p>只能有一个析构函数，不能重载  </p>
+</li>
+<li><p>如果用户没有编写析构函数，编译系统会自动生成一个缺省的析构函数，如果自定义了析构函数，编译器在执行时会先调用自定义的析构函数再调用合成的析构函数</p>
+</li>
+<li><p>如果一个类中有指针，且在使用的过程中动态的申请了内存，那么最好显示构造析构函数在销毁类之前，释放掉申请的内存空间，避免内存泄漏。  </p>
+</li>
+<li><p><strong>类构造和析构的顺序</strong></p>
+<ul>
+<li>构造的顺序：基类构造函数-&gt;对象成员构造函数-&gt;派生类本身构造函数  </li>
+<li>析构的顺序：派生类本身的析构函数-&gt;对象成员析构函数-&gt;基类析构函数</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;为什么基类的析构函数必须是虚函数？为什么C++默认的析构函数不是虚函数？&#x3D;&#x3D;  </p>
+<blockquote>
+<p>如果父类的析构函数不是虚函数，则不会触发动态绑定（多态），结果就是只会调用父类的析构函数，而不会调用子类的析构函数，从而可能导致子类的内存泄漏（如果子类析构函数中存在free delete等释放内存操作时）；</p>
+<p>C++默认的析构函数不是虚函数是因为虚函数需要额外的虚函数表和虚表指针，占用额外的内存。而对于不会被继承的类来说，其析构函数如果是虚函数，就会浪费内存。因此C++默认的析构函数不是虚函数，而是只有当需要当作父类时，设置为虚函数。  </p>
+</blockquote>
+<p>&#x3D;&#x3D;类什么时候会析构？&#x3D;&#x3D;</p>
+<blockquote>
+<ul>
+<li>局部对象离开作用域</li>
+<li>动态分配的对象被删除：如调用 <code>delete</code></li>
+<li>全局对象和静态对象的程序结束：全局对象和静态对象的生命周期与程序的生命周期相同，析构顺序可能是不确定的，这取决于编译器和链接器。</li>
+<li>容器中的对象被移除</li>
+<li>类成员对象的析构：当一个类对象包含其他类对象作为其成员时，包含的类对象会在外层类对象析构时一同被销毁。</li>
+</ul>
+</blockquote>
+<h5 id="拷贝控制"><a href="#拷贝控制" class="headerlink" title="拷贝控制"></a>拷贝控制</h5><ul>
+<li><p>一个类通过定义五种特殊的成员函数来控制此类型对象<strong>拷贝、移动、赋值和销毁</strong>时做什么，包括：拷贝构造函数、拷贝赋值运算符、移动构造函数、移动赋值运算符和析构函数</p>
+</li>
+<li><p>拷贝构造函数</p>
+<ul>
+<li><p>一个构造函数的<strong>第一个参数是自身类类型的引用</strong>，且任何额外参数都有默认值，则此构造函数是拷贝构造；</p>
+</li>
+<li><p>编译器也会在未定义时为合成一个拷贝构造函数</p>
+</li>
+<li><p><strong>拷贝初始化发生的情况</strong>（拷贝初始化是依靠拷贝构造函数和移动构造函数完成的）：</p>
+<ul>
+<li>用 &#x3D; 定义变量时会发生；</li>
+<li>用类的一个实例化对象去初始化另一个对象；</li>
+<li>将一个对象作为实参传递给一个非引用类型的形参；</li>
+<li>从一个返回类型为非引用类型的函数返回一个对象；</li>
+<li>用花括号列表初始化一个数组中的元素或一个聚合类中的成员；</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;为什么拷贝构造函数必须传引用不能传值？&#x3D;&#x3D;</p>
+<blockquote>
+<p>拷贝构造函数必须接受对象的引用而非对象本身，原因有两点：</p>
+<ul>
+<li><strong>无限递归问题</strong>： 如果拷贝构造函数接受一个对象作为参数（按值传递），则在拷贝构造函数被调用时，它需要创建一个新的对象。创建新对象时，会再次调用拷贝构造函数，这将导致无限递归调用。最终，程序会因栈溢出而崩溃。</li>
+<li><strong>效率问题</strong>： 按值传递对象时，需要调用拷贝构造函数创建临时对象。这会导致额外的开销，特别是在处理大型对象时。而按引用传递对象可以避免额外的拷贝操作，从而提高程序效率。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>拷贝赋值运算符：接受一个与其所在类相同类型的参数</p>
+<blockquote>
+<p><strong>三&#x2F;五法则：</strong></p>
+<ul>
+<li>需要析构函数的类也需要拷贝和赋值操作<strong>；</strong></li>
+<li>需要拷贝操作的类也需要赋值操作，反之亦然；</li>
+<li>析构函数不能是删除的；</li>
+<li>如果一个类有删除的或不可访问的析构函数，那么其默认和拷贝构造函数会被定义为删除的；</li>
+<li>如果一个类有const或引用成员，则不能使用合成的拷贝赋值操作；</li>
+<li>所有五个拷贝控制成员应该看作一个整体。</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>使用&#x3D;default</strong>：通过将拷贝控制成员定义为&#x3D;default来显示的要求编译器生成合成的版本</li>
+<li><strong>阻止拷贝</strong>：对于某些类来说，拷贝构造函数和拷贝赋值运算符没有合理的意义，可以通过将拷贝构造函数和拷贝赋值运算符<strong>定义为删除的函数</strong>来阻止拷贝，即在函数的参数列表后面加上 <strong>&#x3D;delete</strong> 来指出我们希望将它定义为删除的。</li>
+</ul>
+</li>
+<li><p>拷贝控制和资源管理</p>
+<ul>
+<li>管理<strong>类外资源</strong>的类必须定义拷贝控制成员，这种类需要通过析构函数来释放对象所分配的资源，一旦一个类需要析构函数，则几乎肯定需要一个拷贝构造函数和一个拷贝赋值运算符；</li>
+<li>在编写一个赋值运算符时，一个较好的模式是先将右侧运算符对象拷贝到一个局部临时对象中，当拷贝完成后，销毁左侧运算对象的现有成员就是安全的了。</li>
+</ul>
+</li>
+<li><p>对象移动</p>
+<ul>
+<li>移动而非拷贝对象：直接调用标准库函数<strong>std::move</strong>(定义在utility头文件中)</li>
+<li>使用移动而不是拷贝的原因： IO 类或者 unique_ptr &#x3D;这些类都<strong>包含不能被共享的资源(如指针或者IO缓冲)<strong>，因此这些类型的对象</strong>不能被拷贝但是可以被移动</strong></li>
+<li>在重新分配内存的过程中移动而不是拷贝元素</li>
+</ul>
+</li>
+</ul>
+<h5 id="移动控制"><a href="#移动控制" class="headerlink" title="移动控制"></a>移动控制</h5><ul>
+<li>为了让我们自己的类支持移动操作（窃取资源而不是拷贝资源），需要为其定义移动构造函数和移动赋值运算符；</li>
+<li>移动构造函数<ul>
+<li>第一个参数是<strong>该类类型的右值引用</strong>，且任何额外的参数都必须有默认实参；</li>
+<li>移动构造函数必须确保<strong>移后源对象必须不再指向被移动的资源</strong>，这些资源的所有权已经<strong>属于新创建的对象</strong>；</li>
+<li>与拷贝构造函数不同，移动构造函数不分配任何新内存；</li>
+</ul>
+</li>
+<li>移动赋值运算符<ul>
+<li>移后源对象必须可析构：从一个对象移动数据并不会销毁对象，但有时在移动操作完成后，源对象会被销毁，必须确保移后源对象进入一个可析构的状态</li>
+<li>不抛出异常的移动构造函数和移动赋值运算符必须标记为<strong>noexcept</strong>（在类头文件的声明和定义中都进行指定）</li>
+</ul>
+</li>
+<li>合成的移动操作<ul>
+<li>只有一个类没有定义任何自己版本的拷贝控制成员，并且所有非static数据成员都可以移动时，编译器才会为它合成移动构造函数或者移动赋值运算符</li>
+</ul>
+</li>
+</ul>
+<p>&#x3D;&#x3D;C++的空类有哪些成员函数？大小是多少？&#x3D;&#x3D;</p>
+<blockquote>
+<p>在C++中，空类（没有定义任何成员变量和成员函数的类）会自动获得一些隐式成员函数。编译器会为这个类生成以下特殊成员函数：</p>
+<ul>
+<li><strong>默认构造函数</strong>：如果没有提供其他构造函数，编译器将生成一个默认构造函数。</li>
+<li><strong>析构函数</strong>：用于在对象生命周期结束时清理资源。</li>
+<li><strong>拷贝构造函数</strong>：用于创建一个对象的副本。</li>
+<li><strong>拷贝赋值运算符</strong>：用于将一个对象的值赋给另一个对象。</li>
+<li><strong>移动构造函数（C++11）</strong>：用于从一个对象转移资源到另一个对象，无需创建副本。</li>
+<li><strong>移动赋值运算符（C++11）</strong>：用于将一个对象的资源移动到另一个对象。</li>
+</ul>
+<p>这些成员函数在需要时才会被生成，例如当我们创建对象或执行相应的操作时。</p>
+<p>尽管空类没有数据成员，但为了确保其对象具有独立的内存地址，编译器会分配至少1字节的空间。</p>
+</blockquote>
+<h5 id="重载"><a href="#重载" class="headerlink" title="重载"></a>重载</h5><ul>
+<li><p>重载运算符应使用与内置类型一致的含义</p>
+</li>
+<li><p>通常情况下，不应该重载逗号，取地址，逻辑与和逻辑或运算符</p>
+</li>
+<li><p><strong>选择作为成员或非成员</strong>：</p>
+<ul>
+<li>赋值（<code>=</code>）、下标（<code>[]</code>）、调用（<code>()</code>）和成员访问箭头（<code>-&gt;</code>）必须是成员函数；</li>
+<li>复合赋值运算符（例如<code>+=</code>）一般来说应该是成员，但并非必须；</li>
+<li>改变对象状态的运算符或者与给定类型密切相关的运算符，如递增、递减和解引用运算符，通常应该是成员；</li>
+<li><strong>具有对称性的运算符</strong>可能转换任意一端的运算对象，例如算术、相等性、关系和位运算符等，因此它们通常应该是普通的非成员函数；</li>
+<li><strong>输入输出运算符必须是非成员函数</strong>，需要读写类的非公有数据成员时，IO运算符一般被声明为<strong>友元</strong>；</li>
+</ul>
+</li>
+<li><p>当把运算符定义为成员函数时，它的左侧运算对象必须是运算符所属类的一个对象</p>
+</li>
+<li><p>区分前置和后置运算符</p>
+<ul>
+<li>普通的重载无法区分，前置和后置的区别，规定后置版本接受一个额外的（不被使用）int类型的形参，使用后置运算符时，编译器为这个形参提供一个值为0的实参。</li>
+</ul>
+</li>
+<li><p>标准库定义的函数对象</p>
+<p>标准库定义了一组表示算术运算符、关系运算符、逻辑运算符的类，每个类分别定义了一个执行命名操作的调用运算符</p>
+<p><img src="/img/%E7%B1%BB/image-20230309202101230.png" alt="image-20230309202101230"></p>
+</li>
+</ul>
+<p>​		表示运算符的函数对象类常用来替换算法中的默认运算符</p>
+<ul>
+<li>重载和重写  <ul>
+<li>重载：两个函数名相同，但是参数列表不同（个数，类型），返回值类型没有要求，在同一作用域中<br>重写：子类继承了父类，父类中的函数是虚函数，在子类中重新定义了这个虚函数，这种情况是重写</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://lyfu0814.github.io/2023/11/08/%E7%B1%BB/" title="类">https://lyfu0814.github.io/2023/11/08/类/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/11/08/%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E5%8F%8A%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86/" rel="prev" title="编译过程及执行原理">
+                  <i class="fa fa-angle-left"></i> 编译过程及执行原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/11/08/%E5%9F%BA%E6%9C%AC%E8%AF%AD%E8%A8%80/" rel="next" title="基本语言">
+                  基本语言 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder"></span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">55k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">50 分钟</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
