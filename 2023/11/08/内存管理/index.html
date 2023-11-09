@@ -18,16 +18,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"lyfu0814.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="编译过程 预处理：将要包含(include)的文件插入原文件中、将宏定义展开、根据条件编译命令(#ifdef)选择要使用的代码，最后将这些代码输出到一个“.i”文件中等待进一步处理。  预编译过程不涉及实际代码的编译，预处理器只是对源代码文件进行必要的处理，以便后续的编译过程能够顺利进行。  1gcc -E -o main.i main.c  编译：将相应的高级语言代码映射到汇编语言，如把上面">
+    <meta name="description" content="内存分配、malloc&#x2F;free、new&#x2F;delete、内存使用错误、内存分配。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="内存管理">
 <meta property="og:url" content="https://lyfu0814.github.io/2023/11/08/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="HerTech">
-<meta property="og:description" content="编译过程 预处理：将要包含(include)的文件插入原文件中、将宏定义展开、根据条件编译命令(#ifdef)选择要使用的代码，最后将这些代码输出到一个“.i”文件中等待进一步处理。  预编译过程不涉及实际代码的编译，预处理器只是对源代码文件进行必要的处理，以便后续的编译过程能够顺利进行。  1gcc -E -o main.i main.c  编译：将相应的高级语言代码映射到汇编语言，如把上面">
+<meta property="og:description" content="内存分配、malloc&#x2F;free、new&#x2F;delete、内存使用错误、内存分配。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lyfu0814.github.io/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/image-20231109170852196.png">
 <meta property="article:published_time" content="2023-11-08T03:08:20.000Z">
-<meta property="article:modified_time" content="2023-11-09T08:34:32.186Z">
+<meta property="article:modified_time" content="2023-11-09T09:18:31.609Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lyfu0814.github.io/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/image-20231109170852196.png">
 
 
 <link rel="canonical" href="https://lyfu0814.github.io/2023/11/08/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
@@ -138,7 +140,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">编译过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%BA%93%E5%92%8C%E5%8A%A8%E6%80%81%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">静态库和动态库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91%E6%8C%87%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">预编译指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#include"><span class="nav-number">4.</span> <span class="nav-text">#include</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91%E6%8C%87%E4%BB%A4%EF%BC%88-ifdef%EF%BC%8C-ifndef%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">条件编译指令（#ifdef，#ifndef）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#define%E3%80%81inline%E3%80%81typedef"><span class="nav-number">6.</span> <span class="nav-text">define、inline、typedef</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4"><span class="nav-number">7.</span> <span class="nav-text">命名空间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E6%89%80%E5%8D%A0%E5%AD%97%E8%8A%82%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">变量所占字节数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#extern%E2%80%9CC%E2%80%9D"><span class="nav-number">9.</span> <span class="nav-text">extern“C”</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#C-%E4%B8%AD%E7%9A%84%E7%AC%A6%E5%8F%B7%E9%87%8D%E5%A4%8D%E5%AE%9A%E4%B9%89%E9%97%AE%E9%A2%98"><span class="nav-number">10.</span> <span class="nav-text">C++中的符号重复定义问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF"><span class="nav-number">11.</span> <span class="nav-text">编译错误与运行时错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%BB%84%E7%BB%87"><span class="nav-number">12.</span> <span class="nav-text">文件组织</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E5%86%85%E5%AD%98%E7%9A%84%E4%B8%8D%E5%90%8C%E5%B1%82%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">C++内存的不同层面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%9A%84%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">内存的分配方式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%8C%BA%E5%9F%9F"><span class="nav-number">2.1.</span> <span class="nav-text">静态区域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%8C%BA%E5%9F%9F"><span class="nav-number">2.2.</span> <span class="nav-text">动态区域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#malloc%E5%92%8Cfree%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">malloc和free实现原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#new%E4%B8%8Edelete%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">2.4.</span> <span class="nav-text">new与delete的实现原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%BA%93%E5%88%86%E9%85%8D%E5%99%A8"><span class="nav-number">2.5.</span> <span class="nav-text">标准库分配器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%85%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B7%B1%E6%8B%B7%E8%B4%9D"><span class="nav-number">2.6.</span> <span class="nav-text">浅拷贝和深拷贝</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D"><span class="nav-number">2.7.</span> <span class="nav-text">零拷贝</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D-%E4%BD%BF%E7%94%A8%E9%94%99%E8%AF%AF"><span class="nav-number">2.8.</span> <span class="nav-text">常见的内存分配&#x2F;使用错误</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="nav-number">2.9.</span> <span class="nav-text">栈溢出</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AF%B9%E9%BD%90"><span class="nav-number">2.10.</span> <span class="nav-text">内存对齐</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -203,7 +205,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="内存管理 | HerTech">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="内存分配、malloc/free、new/delete、内存使用错误、内存分配。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -225,7 +227,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-11-09 16:34:32" itemprop="dateModified" datetime="2023-11-09T16:34:32+08:00">2023-11-09</time>
+      <time title="修改时间：2023-11-09 17:18:31" itemprop="dateModified" datetime="2023-11-09T17:18:31+08:00">2023-11-09</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -255,17 +257,18 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.6k</span>
+      <span>9.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>9 分钟</span>
     </span>
 </div>
 
+            <div class="post-description">内存分配、malloc/free、new/delete、内存使用错误、内存分配。</div>
         </div>
       </header>
 
@@ -274,275 +277,334 @@
     
     <div class="post-body" itemprop="articleBody"><span id="more"></span>
 
-<h5 id="编译过程"><a href="#编译过程" class="headerlink" title="编译过程"></a>编译过程</h5><ul>
-<li><p><strong>预处理</strong>：将要包含(include)的文件插入原文件中、将宏定义展开、根据条件编译命令(#ifdef)选择要使用的代码，最后将这些代码输出到一个“.i”文件中等待进一步处理。</p>
 <ul>
-<li>预编译过程不涉及实际代码的编译，预处理器只是对源代码文件进行必要的处理，以便后续的编译过程能够顺利进行。</li>
+<li>在C++中，虚拟内存分为代码段、数据段、BSS段、堆区、文件映射区以及栈区六部分。</li>
+<li>32bitCPU可寻址4G线性空间，每个进程都有各自独立的4G逻辑地址，其中0 ~ 3G是用户态空间，3 ~4G是内核空间，不同进程相同的逻辑地址会映射到不同的物理地址中。</li>
+<li>大端序和小端序<ul>
+<li>描述了多字节数据在内存中的存储顺序。不同硬件架构和操作系统可能采用不同字节序</li>
+<li>在大端序中，数据的高位字节（最重要的字节）存储在较低的内存地址中，小端序中，数据的低位字节（最不重要的字节）存储在较低的内存地址中</li>
 </ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -E -o main.i main.c</span><br></pre></td></tr></table></figure>
 </li>
-<li><p><strong>编译</strong>：将相应的高级语言代码映射到汇编语言，如把上面的”.i”文件“翻译”成汇编代码，输出到“.s”文件。</p>
-<ul>
-<li>编译器会对源代码进行词法分析、语法分析、语义分析（类型检查、作用域检查等）、代码优化</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -S -o main.s main.i</span><br></pre></td></tr></table></figure>
+<h4 id="C-内存的不同层面"><a href="#C-内存的不同层面" class="headerlink" title="C++内存的不同层面"></a>C++内存的不同层面</h4><ul>
+<li>标准库分配器</li>
+<li>C++函数：new、new[]、operator new()</li>
+<li>C函数库：malloc&#x2F;free</li>
+</ul>
+<h4 id="内存的分配方式"><a href="#内存的分配方式" class="headerlink" title="内存的分配方式"></a>内存的分配方式</h4><ul>
+<li><strong>静态内存分配</strong>： 在编译时确定内存大小和位置的分配方式。全局变量、静态变量和常量都使用静态内存分配。这些变量在程序的整个生命周期中都存在，直到程序结束。静态内存分配的优点是速度快，开销小；缺点是分配的内存大小在编译时就确定，不能在运行时改变。</li>
+<li><strong>栈内存分配</strong>： 栈内存分配是在函数调用期间为局部变量和函数参数分配内存的方式。栈内存分配由编译器自动处理，无需程序员手动管理。栈内存分配速度快，但分配的内存大小受到栈大小的限制。当函数调用结束时，分配的内存会自动释放。</li>
+<li><strong>堆内存分配</strong>： 堆内存分配是在程序运行期间动态分配和释放内存的方式。C++中，可以使用 new 和delete 操作符（或 new[] 和 delete[] 操作符）在堆上分配和释放内存。堆内存分配允许在运行时分配可变大小的内存，但分配和释放的速度相对较慢，且需要程序员手动管理内存的生命周期。不正确地管理堆内存可能导致内存泄漏或悬挂指针等问题。</li>
+</ul>
+<p><u>内存的静态分配和动态分配的区别？</u></p>
+<blockquote>
+<p>分配时间：静态分配在编译时确定内存的分配；动态分配在程序运行时分配内存。</p>
+<p>生命周期：静态分配种，全局变量、静态变量和常量的生命周期在程序的整个执行期间，局部变量和函数参数的生命周期仅在函数调用期间；动态分配的内存的生命周期取决于程序员何时释放它。</p>
+<p>管理方式：静态分配的内存由编译器自动管理；动态分配的内存需要程序员手动进行分配和释放，可能导致内存泄漏或悬挂指针等问题；<br>使用场景：静态分配适用于程序运行期间固定大小的内存需求；动态分配适用于程序运行时才能确定大小的内存需求。</p>
+</blockquote>
+<h5 id="静态区域"><a href="#静态区域" class="headerlink" title="静态区域"></a>静态区域</h5><ul>
+<li>代码段：包括只读存储区和文本区，其中只读存储区存储字符串常量，文本区存储程序的机器代码；</li>
+<li>数据段：存储程序中已初始化的全局变量和静态变量</li>
+<li>bss：存储未初始化的全局变量和静态变量（局部+全局），以及所有被初始化为0的全局变量和静态变量，对于未初始化的全局变量和静态变量，程序运行main之前时会统一清零。即未初始化的全局变量编译器会初始化为0</li>
+</ul>
+<p><u>给定一个类，里面有static、virtual等，请说一下这个类的内存分布</u></p>
+<blockquote>
+<p>1、static修饰符</p>
+<p>1）static修饰成员变量：静态数据成员在全局数据区分配内存，属于本类的所有对象共享，所以它不属于特定的类对象，在没有产生类对象前就可以使用。</p>
+<p>2）static修饰成员函数： 与普通的成员函数相比，静态成员函数由于不是与任何的对象相联系，因此它不具有this指针。从这个意义上来说，它无法访问属于类对象的非静态数据成员，也无法访问非静态成员函数，只能调用其他的静态成员函数。 Static修饰的成员函数，在代码区分配内存。</p>
+<p>2、virtual修饰符</p>
+<p>如果一个类是局部变量则该类数据存储在栈区，如果一个类是通过new&#x2F;malloc动态申请的，则该类数据存储在堆区。  </p>
+<p>如果该类是virutal继承而来的子类，则该类的虚函数表指针和该类其他成员一起存储。虚函数表指针指向只读数据段中的类虚函数表，虚函数表中存放着一个个函数指针，函数指针指向代码段中的具体函数。<br>如果类中成员是virtual属性，会隐藏父类对应的属性。  </p>
+</blockquote>
+<h5 id="动态区域"><a href="#动态区域" class="headerlink" title="动态区域"></a>动态区域</h5><ul>
+<li>heap（堆）：当进程未调用malloc时是没有堆段的，只有调用malloc时采用分配一个堆，并且在程序运行过程中可以动态增加堆大小(移动break指针)，从低地址向高地址增长。分配小内存时使用该区域。堆的起始地址由mm_struct 结构体中的start_brk标识，结束地址由brk标识。</li>
+<li>memory mapping segment(映射区): 存储动态链接库等文件映射、申请大内存（malloc时调用mmap函数）</li>
+<li>stack（栈）：使用栈空间存储函数的返回地址、参数、局部变量、返回值，从高地址向低地址增长。在创建进程时会有一个最大栈大小，Linux可以通过ulimit命令查看和修改。默认大小是1M。<ul>
+<li>函数调用过程栈的变化依赖于编译器和操作系统。通常情况下入栈顺序为：参数（从后向前）、返回地址、局部变量</li>
+</ul>
 </li>
-<li><p><strong>汇编</strong>：将汇编语言映射到机器码，在Linux系统上一般表现为ELF目标文件(OBJ文件)。</p>
-<ul>
-<li>汇编器还会计算各种地址和指针值，生成静态数据和符号表等信息，以便在链接过程中使用</li>
 </ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c -o main.o main.s</span><br></pre></td></tr></table></figure>
+<p><u>堆和栈的区别，以及为什么栈的效率更高?</u></p>
+<blockquote>
+<p>堆和栈的区别：</p>
+<ul>
+<li>地址扩展：堆是由低地址向高地址扩展；栈是由高地址向低地址扩展</li>
+<li>分配和释放：堆中的内存需要调用函数（malloc,free)手动申请和手动释放；栈中内存是由OS自动申请和自动释放，存放着参数、局部变量等内存</li>
+<li>内存碎片：堆中频繁调用malloc和free,会产生内存碎片，查找内存空间会降低内存效率；而栈由于其先进后出的特性，不会产生内存碎片</li>
+<li>访问时间：访问堆的一个具体单元，需要两次访问内存，第一次得取得指针，第二次才是真正的数据，而栈只需访问一次。另外，堆的内容被操作系统交换到外存的概率比栈大，栈一般是不会被交换出去的</li>
+<li>分配效率：堆的分配效率较低，而栈的分配效率较高</li>
+</ul>
+<p>栈的效率高的原因： 栈是操作系统提供的数据结构，计算机底层对栈提供了一系列支持：分配专门的寄存器存储栈的地址，压栈和入栈有专门的指令执行；而堆是由C&#x2F;C++函数库提供的，机制复杂，需要一些列分配内存、合并内存和释放内存的算法，因此效率较低。  </p>
+</blockquote>
+<h5 id="malloc和free实现原理"><a href="#malloc和free实现原理" class="headerlink" title="malloc和free实现原理"></a>malloc和free实现原理</h5><ul>
+<li>malloc() 和free()是 C语言库里的函数，用于动态内存分配和管理<ul>
+<li>Malloc函数用于动态分配内存。为了减少内存碎片和系统调用的开销，malloc其采用内存池的方式，先申请大块内存作为堆区，然后将堆区分为多个内存块，以块作为内存管理的基本单位。当用户申请内存时，直接从堆区分配一块合适的空闲块。</li>
+<li>当进行内存分配时，Malloc会通过隐式链表遍历所有的空闲块，选择满足要求的块进行分配；当进行内存合并时，malloc采用边界标记法，根据每个块的前后块是否已经分配来决定是否进行块合并。</li>
+<li>malloc内存分配方式：<ul>
+<li>用户分配的内存小于 128 KB，通过 brk() 系统调用从堆分配内存；<ul>
+<li>通过 brk() 函数将「堆顶」指针向高地址移动，获得新的内存空间；</li>
+</ul>
 </li>
-<li><p><strong>链接</strong>：将汇编生成的一个或多个目标文件、以及库文件链接起来，最终生成可以在特定平台运行的可执行程序。</p>
-<ul>
-<li>链接器负责解析和处理目标文件中的符号表，合并静态数据和代码，解决外部引用和重定位等问题。</li>
+<li>用户分配的内存大于 128 KB，通过 mmap() 系统调用在文件映射区域分配内存；<ul>
+<li>通过 mmap() 系统调用中「私有匿名映射」的方式，在文件映射区分配一块内存，也就是从文件映射区“偷”了一块内存</li>
 </ul>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -o main main.o</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>内存管理：<ul>
+<li>malloc得到的内存带有cookie（开销，一对cookie占用8个字节），加入开销后分配空间还需调整为16的倍数<br>malloc 使用一种链表或树形结构来管理已分配和未分配的内存块。当用户请求内存时，malloc 首先在内存管理数据结构中查找一个合适大小的空闲内存块。如果找到合适的内存块，malloc 会将其从空闲列表中移除并返回给用户。如果没有找到合适的内存块，malloc会向操作系统请求更多的内存。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>free<ul>
+<li>当调用 free 函数释放一块内存时，free 首先会根据之前 malloc 存储的元数据获取内存块的大小和位置。然后，free 会将这个内存块放回到空闲内存块列表（即内存池）中。</li>
+<li>为了减少内存碎片， free 可能会合并相邻的空闲内存块。例如，如果一个被释放的内存块和它相邻的内存块都是空闲的， free 可以将它们合并成一个更大的空闲内存块。</li>
+</ul>
+</li>
+<li>malloc 和 free 仅分配和释放内存，而不对内存内容进行初始化。在 C++ 中，new 和 delete 操作符不仅负责内存分配和释放，还负责对象的构造和析构。</li>
+<li>malloc() 分配的是虚拟内存<ul>
+<li>如果分配后的虚拟内存没有被访问的话，虚拟内存是不会映射到物理内存的，这样就不会占用物理内存；</li>
+<li>只有在访问已分配的虚拟地址空间的时候，操作系统通过查找页表，发现虚拟内存对应的页没有在物理内存中，就会触发缺页中断，然后操作系统会建立虚拟内存和物理内存之间的映射关系；</li>
+</ul>
+</li>
+</ul>
+<p><u>通过 free 释放内存后，堆内存是否存在？</u></p>
+<blockquote>
+<p>当使用 free 函数回收内存时，这些内存是否立刻还给操作系统取决于实现和操作系统。C 库实现会在内部维护一个内存池，将回收的内存加入内存池以供将来分配。</p>
+<p>在某些情况下，内存池可能会变得非常大，C 库实现可以选择将部分内存归还给操作系统。归还内存的策略取决于实现和操作系统，例如可能会基于内存使用量、空闲内存块的大小或空闲时间来决定。</p>
+<p>free 函数主要目的是将内存归还给内部的内存池，以便在后续的内存分配请求中重用。只有在特定条件下，内存才可能被归还给操作系统。</p>
+</blockquote>
+<p><u>为什么不全部使用 mmap 来分配内存？</u></p>
+<blockquote>
+<p>申请内存的操作应该避免频繁的系统调用，如果都用 mmap 来分配内存，等于每次都要执行系统调用（发生运行态的切换）。</p>
+<p>因此malloc 通过 brk() 系统调用在堆空间申请内存的时候，由于堆空间是连续的，所以直接预分配更大的内存来作为内存池，当内存释放的时候，就缓存在内存池中。</p>
+</blockquote>
+<p><u>为什么不全部使用 brk 来分配？</u></p>
+<blockquote>
+<p>通过 brk 从堆空间分配的内存，并不会归还给操作系统</p>
+<p>随着系统频繁地 malloc 和 free ，尤其对于小块内存，堆内将产生越来越多不可用的碎片，导致“内存泄露”。而这种“泄露”现象使用 valgrind 是无法检测出来的</p>
+</blockquote>
+<p><u>类如何实现只能静态分配和只能动态分配？</u></p>
+<blockquote>
+<p>只能静态分配： 要实现只能静态分配，需要禁止类对象的动态分配。这可以通过将 operator new 和operator delete 声明为私有（private）来实现。这样，类的外部代码将无法使用 new 和 delete 操作符来分配和释放类对象。</p>
+<p>只能动态分配： 要实现只能动态分配，需要禁止类对象的静态分配和栈分配。这可以通过将构造函数、拷贝构造函数、赋值运算符和析构函数声明为私有（private）来实现。  </p>
+</blockquote>
+<p><u>C++如何只将对象分配在堆上或是栈上</u></p>
+<blockquote>
+<ul>
+<li>只建立在栈上：只有使用new运算符，对象才会建立在堆上，因此，只要禁用new运算符（将该类的operator new()设为私有）就可以实现类对象只能建立在栈上。</li>
+<li>只建立在堆上：编译器在为类对象分配栈空间时, 会检查类的析构函数的访问性(其他非静态函数也会检查)，如果类的析构函数是私有的（将析构函数设为私有）， 则编程器不会在栈空间上为类对象分配内存。</li>
+</ul>
+<p>静态建立类对象 A a； ： 是由编译器为对象在栈空间中分配内存，通过移动栈顶指针挪出适当的空间，然后在这片内存空间上调用构造函数形成一个栈对象。这种方式是直接调用类的构造函数。</p>
+<p>动态建立类对象 A* ptr &#x3D; new A ；： 是用new关键字将对象建立在堆空间上，这个过程分两步。首先是执行 operator new() 函数，在堆空间上搜索合适的内存并分配；第二步是调用构造函数构造对象，初始化这片内存空间。这种方式是间接的调用类的构造函数。</p>
+</blockquote>
+<p><u>malloc、realloc、calloc的区别？</u></p>
+<blockquote>
+<p>malloc 是用于分配指定大小的内存，不进行初始化。</p>
+<p>calloc 是用于分配指定数量的指定大小的内存块，并将内存初始化为 0。</p>
+<p>realloc 是用于调整之前分配的内存块的大小，如果内存增加，新增部分不会被初始化。  </p>
+</blockquote>
+<h5 id="new与delete的实现原理"><a href="#new与delete的实现原理" class="headerlink" title="new与delete的实现原理"></a>new与delete的实现原理</h5><p>new 和 delete 是 C++ 语言中用于在堆上分配和释放内存的操作符，它们不仅负责内存管理，还负责对象的构造和析构</p>
+<ul>
+<li>使用 new 操作符创建一个对象时，分为两步骤：<ul>
+<li>operator new：new 首先会调用底层的内存分配函数（例如，malloc）来分配所需的内存。这涉及到查找一个合适的空闲内存块并将其从空闲内存块列表中移除。不同的编译器和平台可能使用不同的内存分配函数。如果分配失败会抛出bad_alloc异常</li>
+<li>placement new：在分配的内存上调用对象的构造函数，以初始化对象的状态。</li>
+</ul>
+</li>
+<li>使用 delete 操作符释放一个对象时，会进行以下步骤：<ul>
+<li>对象析构：delete 首先调用对象的析构函数，以释放对象所持有的资源并清理对象的状态。</li>
+<li>内存释放：接着，delete 调用底层的内存释放函数（例如，free）将内存归还给操作系统。这涉及到将内存块放回空闲内存块列表，并可能合并相邻的空闲内存块以减少内存碎片。同样，不同的编译器和平台可能使用不同的内存释放函数。</li>
+</ul>
+</li>
+</ul>
+<p><u>delete是如何知道释放内存的大小？</u></p>
+<blockquote>
+<p>当使用 new 操作符分配内存时，内存管理子系统会在实际分配的内存块的头部包含cookies，保存一些额外的信息，例如内存块的大小。</p>
+</blockquote>
+<p><u>malloc 和 new 有什么区别？</u></p>
+<blockquote>
+<p>malloc 和 new 都用于在堆上分配内存。</p>
+<p><strong>类型安全</strong></p>
+<ul>
+<li>malloc ：返回的指针类型为 void* ，需要显式类型转换为适当的类型。</li>
+<li>new ：返回相应类型的指针，提供了类型安全。不需要显式类型转换。</li>
+</ul>
+<p><strong>内存分配</strong></p>
+<ul>
+<li>malloc ：分配内存时，需要指定所需内存的字节数。它返回一个指向分配内存的指针，或者在无法分配内存时返回 NULL 。  </li>
+<li>new ：分配内存时，无需指定字节数。它根据所需类型自动计算所需内存的大小，并返回相应类型的指针。如果无法分配内存，它会抛出 std::bad_alloc 异常（除非使用 nothrow 修饰符）。</li>
+</ul>
+<p><strong>初始化</strong></p>
+<ul>
+<li>malloc仅分配内存，不进行初始化</li>
+<li>new会在分配的内存上调用对象的构造函数</li>
+</ul>
+</blockquote>
+<p><u>malloc申请的存储空间能用delete释放吗？</u></p>
+<blockquote>
+<p>如果使用 delete 来释放通过 malloc 分配的内存，可能会导致未定义行为，例如：</p>
+<ul>
+<li>delete 可能尝试调用析构函数，而 malloc 分配的内存并没有调用构造函数。这可能导致程序错误，例如访问无效的资源。</li>
+<li>malloc 和 new 可能使用不同的内存管理策略，导致 delete 无法正确释放 malloc 分配的内存。</li>
+</ul>
+</blockquote>
+<h5 id="标准库分配器"><a href="#标准库分配器" class="headerlink" title="标准库分配器"></a>标准库分配器</h5><p><img src="/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/image-20231109170852196.png" alt="image-20231109170852196"></p>
+<ul>
+<li>设计是内存池的思想，主要目的是减少cookie开销</li>
+<li>16个指针指向16条链表，每条链表分配不同大小的内存空间，从左往右每一条链表间隔8个字节（容器的需求都会被调整为8的倍数）。在代码实现的时候，是首先申请一个大的内存块，然后在大的内存块上进行切分，所以不同链表之间会有连线。<ul>
+<li>若下一次申请的大小和已有链表相同，则共用一个链表继续向下分配，否则重新开辟；</li>
+<li>若内存剩余资源已不够申请新的链表的大小，则可以向已分配的更大的链表借用（若不存在更大的链表，则分配失败）；</li>
+</ul>
+</li>
+<li>每个链表在初始分配内存空间时会申请【nx20x2+追加量】字节的内存空间（首先考虑战备池pool中的余量），n代表第n条链表，20表示将内存最多切分成20个子内存块，2表示会申请2倍大小的内存用于战备。这些内存空间是cookie free的。<ul>
+<li>战备池（pool，即start_free和end_free夹着的部分）会被后续链表使用，从pool中切割出的区块数量永远在1-20之间；</li>
+<li>若pool的余量不足以继续使用，则将碎片划分给大小最近的链表，然后继续分配；</li>
+</ul>
+</li>
+<li>如果申请的内存大于128字节，那么就由malloc来管理（上下带cookie等开销），就不归这个分配器管理了  </li>
+<li>源码中deallocate没有free操作（源于先天设计缺陷），即只要被pool申请空间之后，就不会再还回操作系统了，而是还给负责的链表。对于一个程序来说问题不大，但是对于一台机器来说，不止运行一个程序，这是有弊端的。</li>
+</ul>
+<h5 id="浅拷贝和深拷贝"><a href="#浅拷贝和深拷贝" class="headerlink" title="浅拷贝和深拷贝"></a>浅拷贝和深拷贝</h5><ul>
+<li>浅拷贝： 浅拷贝是对对象的顶层结构进行复制，但不会复制对象内部的子对象或指针所引用的内存。换句话说，浅拷贝创建了一个新对象，这个新对象与原对象共享内部数据结构和引用。这可能会导致在一个对象上的更改影响另一个对象的情况。<ul>
+<li>假设一个包含指针成员的对象，浅拷贝会复制指针本身，而不是指针所指向的内存。这意味着拷贝后的对象与原对象共享相同的指针指向的内存。</li>
+<li>&#x3D; 是浅拷贝</li>
+</ul>
+</li>
+<li>深拷贝： 深拷贝则是对对象的整个结构进行递归复制，包括子对象和指针所引用的内存。深拷贝会创建一个与原对象完全独立的新对象。由于深拷贝创建了原对象的完整副本，对一个对象的更改不会影响另一个对象。<ul>
+<li>以包含指针成员的对象为例，深拷贝会复制指针所指向的内存，然后在新对象中创建一个新的指针指向这块新的内存。这样，拷贝后的对象与原对象在内存上完全独立。</li>
+<li>strcpy是深拷贝</li>
+</ul>
+</li>
+<li>浅拷贝通常更快、占用更少内存，但可能导致意外的副作用，例如多个对象共享同一个内部数据结构。深拷贝虽然能够创建独立的对象副本，但可能更慢，占用更多内存。</li>
+</ul>
+<h5 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a><strong>零拷贝</strong></h5><ul>
+<li>可以减少数据拷贝和共享总线操作的次数</li>
+<li>在C++中，vector的成员函数emplace_back()体现零拷贝<ul>
+<li>push_back()函数需要调用拷贝构造函数和移动构造函数</li>
+<li>emplace_back()插入的元素原地构造，不需要触发拷贝构造和移动构造，效率更高</li>
+</ul>
+</li>
+</ul>
+<h5 id="常见的内存分配-使用错误"><a href="#常见的内存分配-使用错误" class="headerlink" title="常见的内存分配&#x2F;使用错误"></a>常见的内存分配&#x2F;使用错误</h5><ul>
+<li><p>内存分配未成功，却使用它</p>
+<ul>
+<li>因此在使用内存之前检查指针是否为NULL</li>
+</ul>
+</li>
+<li><p>内存分配虽然成功，但是尚未初始化就使用它</p>
+<ul>
+<li>内存的缺省初值没有统一标准，有时候为零值</li>
+<li>无论用何种方式创建数组，都别忘了赋初值，即便是赋零值也不可省略</li>
+</ul>
+</li>
+<li><p>内存分配成功并且已经初始化，但操作越过了内存的边界</p>
+<ul>
+<li>例如在使用数组时越界</li>
+</ul>
+</li>
+<li><h5 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h5><ul>
+<li><p>栈溢出指的是程序向栈中某个变量中写入的字节数超过了这个变量本身所申请的字节数，因而导致栈中与其相邻的变量的值被改变。</p>
+</li>
+<li><p>栈溢出的原因</p>
+<ul>
+<li><p>局部数组过大。当函数内部的数组过大时，有可能导致堆栈溢出。</p>
+</li>
+<li><p>解决这类问题的办法有两个，一是增大栈空间,二是改用动态分配，使用堆（heap）而不是栈（stack）。</p>
+</li>
+<li><p>递归调用层次太多。递归函数在运行时会执行压栈操作，当压栈次数太多时，也会导致堆栈溢出。</p>
+</li>
+<li><p>指针或数组越界。这种情况最常见，例如进行字符串拷贝，或处理用户输入等等。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>内存溢出</strong></p>
+<ul>
+<li>指程序申请内存时，没有足够的内存供申请者使用。内存溢出就是你要的内存空间超过了系统实际分配给你的空间，此时系统相当于没法满足你的需求，就会报内存溢出的错误</li>
+<li>内存溢出的原因<ul>
+<li>内存中加载的数据量过于庞大，如一次从数据库取出过多数据</li>
+<li>集合类中有对对象的引用，使用完后未清空，使得不能回收</li>
+<li>代码中存在死循环或循环产生过多重复的对象实体</li>
+<li>使用的第三方软件中的BUG</li>
+<li>启动参数内存值设定的过小</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>内存泄漏</strong></p>
+<ul>
+<li><p>内存泄漏(memory leak)是指由于疏忽或错误造成了程序未能释放掉不再使用的内存的情况。内存泄漏并非指内存在物理上的消失，而是应用程序分配某段内存后，由于设计错误，失去了对该段内存的控制，因而造成了内存的浪费；</p>
+</li>
+<li><p>内存泄漏的分类</p>
+<ul>
+<li><p>堆内存泄漏 （Heap leak）：堆内存完成后必须通过调用对应的 free或者delete 删掉，如果程序的设计的错误导致这部分内存没有被释放，那么此后这块内存将不会被使用，就会产生Heap Leak。</p>
+</li>
+<li><p>系统资源泄露（Resource Leak）：主要指程序使用系统分配的资源比如 Bitmap,handle,SOCKET等没有使用相应的函数释放掉，导致系统资源的浪费，严重可导致系统效能降低，系统运行不稳定。</p>
+</li>
+<li><p>没有将基类的析构函数定义为虚函数。当基类指针指向子类对象时，如果基类的析构函数不是virtual，那么子类的析构函数将不会被调用，子类的资源没有正确释放，因此造成内存泄露。</p>
+</li>
+</ul>
+</li>
+<li><p>内存泄露的检测</p>
+<ul>
+<li>内存泄漏通常是由于调用了malloc&#x2F;new等内存申请的操作，但是缺少了对应的free&#x2F;delete。为了判断内存是否泄露，我们一方面可以使用linux环境下的内存泄漏检查工具Valgrind,另一方面我们在写代码时可以添加内存申请和释放的统计功能，统计当前申请和释放的内存是否一致，以此来判断内存是否泄露。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>段错误 (Segmentation fault)</strong></p>
+<ul>
+<li>段错误常常发生在访问非法内存地址的时候，例如：访问越界数组、访问空指针、访问已释放的内存等。操作系统会捕获这个异常并终止程序的执行。</li>
+</ul>
+</li>
+<li><p><strong>核心转储（coredump）</strong></p>
+<ul>
+<li>当程序异常终止时，操作系统可以将程序在异常发生时的内存映像以及其他相关信息保存到一个文件中，这个文件称为核心转储文件（coredump 文件）。通过分析这个文件，开发者可以定位程序崩溃时的上下文信息，从而帮助找出问题的根源。</li>
+</ul>
+</li>
+</ul>
+<p><u>解决 Segmentation fault 和分析 coredump 的一般步骤</u></p>
+<blockquote>
+<ol>
+<li>编译程序时，确保启用调试信息。使用 g++ 编译器时，可以加上 -g 选项。</li>
+<li>确保操作系统配置允许生成 coredump 文件。在 Linux 系统上，可以使用 ulimit 命令设置允许生成 coredump 文件。</li>
+<li>运行程序。当程序发生 Segmentation fault 时，操作系统会生成 coredump 文件。通常，这个文件名为 core 或 core.PID （其中 PID 是进程 ID）。</li>
+<li>使用调试器（如 gdb）分析 coredump 文件。例如，可以使用命令 gdb -c corefile<br>your_program （其中 corefile 是 coredump 文件名， your_program 是可执行文件名）。  </li>
+<li>在调试器中，可以使用 backtrace （或简写 bt ）命令查看程序崩溃时的调用栈。通过分析调用栈，可以定位到导致 Segmentation fault 的代码行。</li>
+<li>根据调用栈和代码分析，找出问题的根源并修复它。可能的原因包括：数组越界访问、空指针解引用、内存泄漏、内存重复释放等。</li>
+<li>修复问题后，重新编译并运行程序，确保问题已解决。</li>
+</ol>
+</blockquote>
+<h5 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a><strong>内存对齐</strong></h5><ul>
+<li><p>原因</p>
+<ul>
+<li>**平台原因(移植原因)**：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
+<li><strong>性能原因</strong>：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问。</li>
+</ul>
+<blockquote>
+<p>假如没有内存对齐，数据任意存放。若一个int变量存放在从地址1开始的连续四个字节中，处理器去取数据时，要先从0地址开始读取第一个4字节块,剔除不想要的字节（0地址）,然后从地址4开始读取</p>
+<p>下一个4字节块,同样剔除不要的数据（5，6，7地址）,最后留下的两块数据合并放入寄存器。这需要做很多额外工作。</p>
+<p>eg：对int和char取 sizeof() 都为4bytes  </p>
+</blockquote>
+</li>
+<li><p>规则</p>
+</li>
+<li><p>基本类型的对齐值就是其sizeof值;</p>
+</li>
+<li><p>数据成员对齐规则：对于结构的各个成员，第一个成员位于偏移为0的位置，以后每个数据成员的偏移量必须是min(#pragma pack()指定的数，这个数据成员的自身长度) 的倍数。</p>
+</li>
+<li><p>结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对<br>齐，对齐将按照#pragma pack指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行。</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">st1</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="type">char</span> a ;</span><br><span class="line"><span class="type">int</span> b ;</span><br><span class="line"><span class="type">short</span> c ;</span><br><span class="line">&#125;;</span><br><span class="line">St1：<span class="type">char</span>占一个字节，起始偏移为<span class="number">0</span>，<span class="type">int</span>占<span class="number">4</span>个字节，<span class="built_in">min</span>(<span class="meta">#<span class="keyword">pragma</span> pack()指定的数，这个数据成员</span></span><br><span class="line">的自身长度)=<span class="number">4</span>，所以<span class="type">int</span>按<span class="number">4</span>字节对齐，起始偏移必须为<span class="number">4</span>的倍数，所以起始偏移为<span class="number">4</span>，在<span class="type">char</span>后编译器会</span><br><span class="line">添加<span class="number">3</span>个字节的额外字节，不存放任意数据。<span class="type">short</span>占<span class="number">2</span>个字节，按<span class="number">2</span>字节对齐，起始偏移为<span class="number">8</span>，正好是<span class="number">2</span>的倍</span><br><span class="line">数，无须添加额外字节。到此规则<span class="number">1</span>的数据成员对齐结束，内存状态为：</span><br><span class="line">occc|oooo|<span class="built_in">oo</span>(c表示额外添加的字节)，共<span class="number">10</span>字节</span><br><span class="line">    </span><br><span class="line">继续进行结构本身的对齐，st1结构中最大数据成员长度为<span class="type">int</span>，占<span class="number">4</span>字节，而默认的<span class="meta">#<span class="keyword">pragma</span> pack为8，</span></span><br><span class="line">所以结果本身按照<span class="number">4</span>字节对齐，结构总大小必须为<span class="number">4</span>的倍数，需添加<span class="number">2</span>个额外字节使结构的总大小为<span class="number">12</span> 。此</span><br><span class="line">时的内存状态为</span><br><span class="line">occc|oooo|oocc，共<span class="number">12</span>字节</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> st2</span><br><span class="line">&#123;</span><br><span class="line"><span class="type">short</span> c ;</span><br><span class="line"><span class="type">char</span> a ;</span><br><span class="line"><span class="type">int</span> b ;</span><br><span class="line">&#125;;</span><br><span class="line">第一步：oo|o|oooo、第二步：oo|oc|oooo</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>动态链接：使用动态链接库(*.so)进行链接，生成的程序在执行的时候需要加载所需的动态库才能运行，动态链接生成的程序体积较小，但是必须依赖所需的动态库，否则无法执行。</li>
-<li>静态链接：使用静态库(*.a)进行链接，生成的程序包含程序运行所需要的全部库，可以直接运行，不过静态链接生成的程序体积较大。</li>
+<li>结构体内存对齐<ul>
+<li>结构体内成员按照声明顺序存储，第一个成员地址和整个结构体地址相同。</li>
+<li>c++11以后引入两个关键字 alignas 与 alignof 。其中 alignof 可以计算出类型的对齐方式， alignas 可以指定结构体的对齐方式。</li>
 </ul>
-</li>
-</ul>
-<h5 id="静态库和动态库"><a href="#静态库和动态库" class="headerlink" title="静态库和动态库"></a>静态库和动态库</h5><ul>
-<li><p>文件格式：</p>
-<ul>
-<li>静态库：通常以 .lib（Windows）或 .a（Linux&#x2F;UNIX）为扩展名。</li>
-<li>动态库：通常以 .dll（Windows）或 .so（Linux&#x2F;UNIX）为扩展名。</li>
-</ul>
-</li>
-<li><p>链接方式：</p>
-<ul>
-<li>静态库：在链接时与程序代码直接链接，生成的可执行文件包含了库中所有需要的代码。因此，可执行文件较大，但不需要额外的库文件。</li>
-<li>动态库：在编译时不直接链接到程序中，而是在程序运行时动态链接。生成的可执行文件不包含库中的代码，只包含对库的引用。因此，可执行文件较小，但需要库文件才能运行。</li>
-</ul>
-</li>
-<li><p>代码重用与更新</p>
-<ul>
-<li>静态库：如果多个程序使用同一个静态库，每个程序都会包含库的一份拷贝。这可能导致内存和磁盘空间的浪费。另外，当静态库更新时，需要重新编译所有使用它的程序。</li>
-<li>动态库：多个程序可以共享同一份动态库，节省内存和磁盘空间。当动态库更新时，只需替换库文件，而不需要重新编译所有使用它的程序。但需要确保新版本的库与已有程序兼容。</li>
-</ul>
-</li>
-<li><p>程序加载时间</p>
-<ul>
-<li>静态库：因为所有库代码都已链接到可执行文件，程序加载时间相对较短。</li>
-<li>动态库：程序在运行时需要加载和链接动态库，这可能导致程序启动时间稍长。</li>
-</ul>
-</li>
-<li><p>跨平台兼容性</p>
-<ul>
-<li>静态库：在不同平台间迁移时，可能需要重新编译静态库以确保兼容性。</li>
-<li>动态库：更容易在不同平台间迁移，只需针对目标平台提供相应的动态库版本。</li>
-</ul>
-</li>
-<li><p>生成方式：</p>
-<ul>
-<li>静态库：编译源文件为目标（.o）文件，使用 <code>ar</code> 命令将目标文件打包为静态库</li>
-<li>动态库：编译源文件时，添加 -fPIC 标志来生成位置无关代码，使用 <code>-shared</code> 标志将目标文件链接为动态库</li>
-</ul>
-</li>
-<li><p>使用方式：</p>
-<ul>
-<li><p>静态库：需要在编译命令行中链接，例如库的名称是<code>libmylib.a</code>，则使用<code>-lmylib</code></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ main.cpp -o main -L/path/lib -lmylib</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>动态库：在运行时被加载到内存中。因此在运行程序时需要确保动态库在系统的库搜索路径中。</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/path/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-<p>&#x3D;&#x3D;动态库的优缺点？&#x3D;&#x3D;</p>
-<blockquote>
-<p>优点：代码重用、内存占用、更新简便、模块化、程序更具跨平台兼容性</p>
-<p>缺点：链接开销、程序依赖、安全风险、版本许可问题、调试困难</p>
-</blockquote>
-<h5 id="预编译指令"><a href="#预编译指令" class="headerlink" title="预编译指令"></a>预编译指令</h5><p>预处理器可以识别以 # 开头的指令。以下是一些常见的 C++ 预处理指令：</p>
-<ul>
-<li><code>#include</code>用于包含其他头文件。</li>
-<li><code>#define</code>定义宏。用于定义常量或简单的函数。</li>
-<li><code>#undef</code>：取消宏定义。移除先前使用 <code>#define</code> 定义的宏。</li>
-<li><code>#ifdef</code>、<code>#ifndef</code>、<code>#if</code>、<code>#elif</code>、<code>#else</code> 和 <code>#endif</code>：条件编译指令。根据条件包含或排除代码。</li>
-<li><code>#error</code>：生成编译时错误。当预处理器遇到 <code>#error</code> 指令时，会中止编译并显示指定的错误消息。</li>
-<li><code>#pragma</code>：编译器特定指令。用于向编译器发送特殊的命令。</li>
-</ul>
-<h5 id="include"><a href="#include" class="headerlink" title="#include"></a><strong>#include</strong></h5><ul>
-<li><code>&lt;&gt;</code>表示从系统目录下开始搜索，然后再搜索PATH环境变量所列出的目录，不搜索当前目录</li>
-<li><code>&quot;&quot;</code>表示先从当前目录搜索，然后是系统目录和PATH环境变量所列出的目录下搜索</li>
-</ul>
-<h5 id="条件编译指令（-ifdef，-ifndef）"><a href="#条件编译指令（-ifdef，-ifndef）" class="headerlink" title="条件编译指令（#ifdef，#ifndef）"></a><strong>条件编译指令</strong>（#ifdef，#ifndef）</h5><ul>
-<li>通常用于头文件中的“包含保护”（include guard）机制。可以避免头文件在同一个编译单元中被多次包含，从而防止重复声明、编译错误和不必要的编译开销。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// my_header.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MY_HEADER_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MY_HEADER_H</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 头文件的内容，如类声明、函数声明等</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// MY_HEADER_H</span></span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>#ifndef</code>指令检查一个名为<code>MY_HEADER_H</code>的宏是否已经定义。如果该宏尚未定义，预处理器将继续处理头文件的内容，并使用<code>#define</code>指令定义该宏。在头文件的末尾，<code>#endif</code>指令结束了包含保护。</li>
-<li>如果头文件被多次包含，<code>#ifndef</code>指令将检测到<code>MY_HEADER_H</code>已经被定义，从而跳过头文件的内容，直接到达<code>#endif</code>指令。这样一来，同一个头文件在同一个编译单元中不会被多次包含，从而避免了重复声明和其他相关问题。</li>
-</ul>
-<h5 id="define、inline、typedef"><a href="#define、inline、typedef" class="headerlink" title="define、inline、typedef"></a>define、inline、typedef</h5><p>define和inline都可以用于定义简短的函数。</p>
-<ul>
-<li><p>define</p>
-<ul>
-<li>define是C和C++中的预处理器指令，用于定义宏（macro）。</li>
-<li>使用define定义的宏在预处理阶段进行文本替换，而不是在编译阶段进行处理。</li>
-<li>宏没有作用域，它们在整个源文件中都是可见的</li>
-<li>宏不进行类型检查，容易导致潜在的错误和难以调试的问题。</li>
-</ul>
-<p>&#x3D;&#x3D;宏的优缺点&#x3D;&#x3D;</p>
-<blockquote>
-<p>优点：</p>
-<ul>
-<li><strong>提高代码重用性</strong>：宏允许定义一段代码或文本，然后在多个地方使用。这有助于减少重复代码和提高代码可维护性。</li>
-<li><strong>提高性能</strong>：宏在编译阶段进行替换，因此可以避免函数调用带来的性能开销。</li>
-<li><strong>提高编译时配置灵活性</strong>：宏可以在编译时进行条件编译，有助于控制不同编译配置下的代码生成。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li><strong>可读性和维护性</strong>：宏的使用可能导致代码可读性降低，因为宏并不遵循常规的编程语法。</li>
-<li><strong>调试困难</strong>：由于宏在编译阶段进行替换，因此在调试过程中，宏替换后的代码可能会导致找出错误变得更加困难。</li>
-<li><strong>命名冲突</strong>：宏的命名空间是全局的，这可能导致命名冲突。如果在不同的头文件或源文件中定义了相同名称的宏，可能会引发意外的替换和编译错误。</li>
-<li>类型不安全、没有作用域限制</li>
-</ul>
-</blockquote>
-</li>
-<li><p>inline</p>
-<ul>
-<li><code>inline</code>是C++中的一个关键字，用于建议编译器将函数声明为内联函数。</li>
-<li>内联函数在编译过程中可能被编译器直接插入到调用处，从而减少函数调用的开销。但请注意，编译器并不一定会接受这个建议，内联决策仍然由编译器自主决定。</li>
-<li>内联函数具有作用域和类型检查，比宏更安全、更健壮。</li>
-</ul>
-</li>
-<li><p>typedef</p>
-<ul>
-<li>用于定义类型别名</li>
-<li>发生在编译过程中；</li>
-<li>typedef会进行数据类型检查；</li>
-<li>typedef是语句，要加分号标识结束；宏不是语句，不在在最后加分号</li>
-</ul>
-</li>
-</ul>
-<h5 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h5><ul>
-<li>作用：<ul>
-<li><strong>避免名称冲突</strong>：以将一组相关的类、函数和变量等组织在一起，使它们与其他名字空间中的实体互相隔离，从而避免名称冲突。</li>
-<li><strong>代码组织结构化</strong>：将相关代码逻辑组织在一起，使代码更加结构化，便于阅读和维护。</li>
-</ul>
-</li>
-<li>使用：<ul>
-<li>使用<code>using</code>关键字引入命名空间内的特定实体：<code>using my_namespace::MyClass</code>;</li>
-<li>使用<code>using namespace my_namespace </code>指令将整个名字空间导入到当前作用域</li>
-</ul>
-</li>
-</ul>
-<h5 id="变量所占字节数"><a href="#变量所占字节数" class="headerlink" title="变量所占字节数"></a>变量所占字节数</h5><table>
-<thead>
-<tr>
-<th>变量</th>
-<th>64位</th>
-<th>32位</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>char</td>
-<td>1byte</td>
-<td>1byte</td>
-</tr>
-<tr>
-<td>char*</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>short int</td>
-<td>2byte</td>
-<td>2byte</td>
-</tr>
-<tr>
-<td>int</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>unsigned int</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>float</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>double</td>
-<td>8byte</td>
-<td>8byte</td>
-</tr>
-<tr>
-<td>long</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>long long</td>
-<td>8byte</td>
-<td>8byte</td>
-</tr>
-<tr>
-<td>long long</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-</tbody></table>
-<h5 id="extern“C”"><a href="#extern“C”" class="headerlink" title="extern“C”"></a>extern“C”</h5><p><code>extern &quot;C&quot;</code>是一个链接指定符，用于告诉C++编译器在链接时如何处理被声明的函数或变量。它的主要目的是实现C和C++之间的互操作性。  </p>
-<ul>
-<li>C++支持函数重载（在同一个作用域内使用相同的函数名，但参数列表不同）。因此C++编译器在生成目标代码时会对函数名进行<strong>名字修饰</strong>（区分函数重载、不同命名空间的同名函数、不同类的成员函数等），以便在链接时区分具有相同名称的不同函数。这个过程通常会使得函数名更长，增加一些编译器特定的字符和编码。</li>
-<li>C编译器并不支持函数重载，也不对函数名进行名字修饰。因此，当试图在C++中调用C函数或在C代码中调用C++函数时，可能会出现链接错误，因为链接器找不到正确的符号。</li>
-<li>当在C++代码中使用<code>extern &quot;C&quot;</code>声明一个函数或变量时，C++编译器会禁用名字修饰，使得函数或变量的名字与C编译器生成的名字相同。这样，在链接时就可以正确地找到符号，实现C和C++之间的互操作性。</li>
-</ul>
-<h5 id="C-中的符号重复定义问题"><a href="#C-中的符号重复定义问题" class="headerlink" title="C++中的符号重复定义问题"></a>C++中的符号重复定义问题</h5><ul>
-<li>问题发生情况：<ul>
-<li>同一个文件中重复定义了同名的全局变量、函数或类。</li>
-<li>不同文件中定义了同名的全局变量、函数或类。</li>
-<li>静态库中存在重复的符号。</li>
-<li>链接了重复的目标文件。</li>
-</ul>
-</li>
-<li>解决方法：<ul>
-<li>使用<code>#ifndef</code>&#x2F;<code>#define</code>&#x2F;<code>#endif</code>的方式避免头文件被重复包含。</li>
-<li>使用<code>namespace</code>来避免命名冲突：每个文件中的变量放在自己的namespace中。</li>
-<li>用<code>static</code>关键字将变量、函数声明为文件作用域内的局部符号。</li>
-<li>将全局变量或函数定义改为声明，将定义放在一个单独的源文件中。</li>
-</ul>
-</li>
-</ul>
-<p>&#x3D;&#x3D;编译器如何处理函数重载？&#x3D;&#x3D;</p>
-<blockquote>
-<ul>
-<li><p>重载解析（Overload Resolution）： 当在同一作用域内存在多个同名函数时，编译器需要根据调用点的参数类型和数量来确定调用哪个函数。</p>
-</li>
-<li><p>名字修饰（Name Mangling）： 重载解析确定了要调用哪个函数之后，编译器需要为这些重载函数生成独特的二进制符号名。</p>
-</li>
-</ul>
-</blockquote>
-<h5 id="编译错误与运行时错误"><a href="#编译错误与运行时错误" class="headerlink" title="编译错误与运行时错误"></a>编译错误与运行时错误</h5><ul>
-<li>编译错误发生在编译阶段，通常是由于程序员编写的源代码不符合编程语言的规则。编译器在编译过程中会检测并报告这些错误。<ul>
-<li>如语法错误、类型不匹配、未定义的变量或函数等。</li>
-</ul>
-</li>
-<li>运行时错误发生在程序执行阶段，通常是由于程序逻辑错误、资源限制或外部输入导致的。<ul>
-<li>常见的运行时错误包括除以零、数组越界、空指针解引用、内存泄漏等。</li>
-</ul>
-</li>
-</ul>
-<h5 id="文件组织"><a href="#文件组织" class="headerlink" title="文件组织"></a>文件组织</h5><ul>
-<li><p>源文件和头文件的组织：</p>
-<ul>
-<li><p>头文件（.h或.hpp）：通常包含类声明、函数声明、常量定义、模板定义等。头文件主要用于声明接口，它告诉编译器有关这些实体的基本信息，但不包含实现细节。</p>
-</li>
-<li><p>源文件（.cpp）：包含类方法的定义、函数的定义、全局变量的定义等。源文件提供了实现细节，它们与头文件中的声明相匹配。</p>
-</li>
-</ul>
-</li>
-<li><p>编译： 对于每个源文件，编译器会单独进行编译，生成一个与源文件对应的目标文件</p>
 </li>
 </ul>
 
@@ -574,8 +636,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/" rel="prev" title="模板与泛型编程">
-                  <i class="fa fa-angle-left"></i> 模板与泛型编程
+                <a href="/2023/11/08/%E6%A0%87%E5%87%86%E5%BA%93/" rel="prev" title="标准库">
+                  <i class="fa fa-angle-left"></i> 标准库
                 </a>
             </div>
             <div class="post-nav-item">
@@ -612,13 +674,13 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="站点总字数">55k</span>
+    <span title="站点总字数">58k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">50 分钟</span>
+    <span title="站点阅读时长">53 分钟</span>
   </span>
 </div>
 <div class="busuanzi-count">

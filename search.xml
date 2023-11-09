@@ -5,6 +5,8 @@
     <url>/2023/11/08/C%E8%AF%AD%E8%A8%80%E5%87%BD%E6%95%B0%E5%BA%93%E5%8F%8A%E5%85%B6%E4%BB%96/</url>
     <content><![CDATA[<span id="more"></span>
 
+
+
 <h5 id="strcpy函数和strncpy函数的区别"><a href="#strcpy函数和strncpy函数的区别" class="headerlink" title="strcpy函数和strncpy函数的区别"></a>strcpy函数和strncpy函数的区别</h5><p>strcpy 和 strncpy 是 C 语言中的字符串复制函数，它们用于将一个字符串复制到另一个字符串。这两个函数的主要区别在于它们的安全性和复制方式：</p>
 <ul>
 <li><code>strcpy</code> 函数用于将源字符串完整地复制到目标字符串。它没有限制复制的字符数量，所以会一直复制源字符串的字符直到遇到空字符（<code>\0</code>）。当目标字符串的空间不足以容纳源字符串时，就会导致缓冲区溢出。这可能导致程序崩溃或安全漏洞，如代码注入攻击。因此，<code>strcpy</code> 在很多情况下被认为是不安全的。</li>
@@ -1134,84 +1136,6 @@
 </ul>
 <p>main函数执行之后：全局对象的析构函数</p>
 </blockquote>
-<h3 id="标准库"><a href="#标准库" class="headerlink" title="标准库"></a>标准库</h3><h5 id="IO类"><a href="#IO类" class="headerlink" title="IO类"></a>IO类</h5><ul>
-<li><p>IO类</p>
-<ul>
-<li>头文件：iostream、fstream、sstream</li>
-</ul>
-</li>
-<li><p>C++不直接处理输入输出，而是通过一族定义在标准库中的类型来处理IO，这些类型支持从设备读取数据、向设备写入数据的IO操作，设备可以是文件、控制台窗口等；</p>
-</li>
-<li><p>IO对象不能拷贝或赋值，也不能将形参或返回类型设置为流类型</p>
-</li>
-<li><p>代码通常应该在使用一个流之前检查它是否处于良好状态</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (cin &gt;&gt; word);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>管理输出缓冲：有了缓冲机制，操作系统就可以将程序的多个输出操作组合成单一的系统级写操作</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">cout &lt;&lt; <span class="string">&quot;hi!&quot;</span> &lt;&lt; endl;    <span class="comment">// 输出内容和一个换行，然后刷新缓冲区</span></span><br><span class="line">cout &lt;&lt; <span class="string">&quot;hi!&quot;</span> &lt;&lt; flush;    <span class="comment">// 输出内容，然后刷新缓冲区</span></span><br><span class="line">cout &lt;&lt; <span class="string">&quot;hi!&quot;</span> &lt;&lt; ends &lt;&lt; <span class="number">1</span>;    <span class="comment">// 输出内容和一个空字符，然后刷新缓冲区。</span></span><br></pre></td></tr></table></figure>
-
-<p>&#x3D;&#x3D;cout和printf有什么区别？&#x3D;&#x3D;</p>
-<blockquote>
-<ul>
-<li>cout<ul>
-<li>cout&lt;&lt;是类<code>std::ostream</code>的全局对象</li>
-<li>其后可以跟不同的类型，因为cout&lt;&lt;已存在针对各种类型数据做了重载，更加智能和安全</li>
-<li>cout有缓冲输出，flush立即强迫缓冲输出，endl换行再强迫缓冲输出；</li>
-</ul>
-</li>
-<li>printf<ul>
-<li>printf 是C标准库函数</li>
-<li>printf是行缓冲输出，不是无缓冲输出</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-</li>
-<li><p>关联输入和输出流</p>
-<ul>
-<li>当一个输入流被关联到一个输出流时，任何试图从输入流读取数据的操作都会先刷新关联的输出流。标椎库将cout和cin关联在一起</li>
-<li>istream和ostream类型的tie成员都只能接收ostream *类型参数</li>
-</ul>
-</li>
-<li><p>文件输入输出：ifstream；ofstream；fstream</p>
-<ul>
-<li>用IO运算符（&lt;&lt;和&gt;&gt;）来读写文件</li>
-<li>用getline从一个ifstream读取数据</li>
-<li>自动构造和析构：当一个fstream对象被销毁时，close会自动被调用</li>
-<li>成员函数open和close：如果定义了一个空文件流对象，可以随后调用open来将它与文件关联起来，<strong>首先必须关闭已经关联的文件</strong></li>
-</ul>
-</li>
-<li><p>string流：istringstream、ostringstream、stringstream</p>
-</li>
-</ul>
-<h5 id="顺序容器"><a href="#顺序容器" class="headerlink" title="顺序容器"></a>顺序容器</h5><ul>
-<li>标准库中的顺序容器：vector、deque、list、forward_list、array、string</li>
-</ul>
-<p>&#x3D;&#x3D;string与C语言中的 char *有什么区别吗？它是如何实现的？&#x3D;&#x3D;</p>
-<blockquote>
-<p>string继承自basic_string,其实是对char进行了封装，封装的string包含了char数组，容量，长度等等属性。</p>
-<p>string可以进行动态扩展，在每次扩展的时候另外申请一块原空间大小两倍的空间，然后将原字符串拷贝过去，并加上新增的内容。</p>
-</blockquote>
-<h5 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h5><h5 id="泛型算法"><a href="#泛型算法" class="headerlink" title="泛型算法"></a>泛型算法</h5><ul>
-<li><p>大多数都独立于任何特定的容器，它们可用于不同类型的容器和不同类型的元素</p>
-</li>
-<li><p>算法不直接操作容器，而是遍历有两个迭代器指定的一个元素范围</p>
-</li>
-<li><p>算法可能改变容器中保存元素的值，也可能在容器内移动元素，但是永远不会直接添加或删除元素，也永远不会改变底层容器的大小，；</p>
-</li>
-<li><p>标准库定义了一类特殊的迭代器（<strong>插入器</strong>），给这类迭代器赋值会在底层的容器上执行插入操作</p>
-</li>
-<li><p>只读算法：find、count、accumulate、equal等</p>
-</li>
-<li><p>写容器元素的算法：fill、copy、replace等</p>
-</li>
-<li><p>重排容器元素的算法：sort+unique+erase</p>
-</li>
-<li><p>参数绑定：bind</p>
-</li>
-<li><p>优先使用<strong>成员函数版本的算法</strong>，而不是通用算法，因为代价太大。</p>
-</li>
-</ul>
 ]]></content>
       <categories>
         <category>后端</category>
@@ -1223,482 +1147,333 @@
     <url>/2023/11/08/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<span id="more"></span>
 
-<h5 id="编译过程"><a href="#编译过程" class="headerlink" title="编译过程"></a>编译过程</h5><ul>
-<li><p><strong>预处理</strong>：将要包含(include)的文件插入原文件中、将宏定义展开、根据条件编译命令(#ifdef)选择要使用的代码，最后将这些代码输出到一个“.i”文件中等待进一步处理。</p>
 <ul>
-<li>预编译过程不涉及实际代码的编译，预处理器只是对源代码文件进行必要的处理，以便后续的编译过程能够顺利进行。</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gcc -E -o main.i main.c</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>编译</strong>：将相应的高级语言代码映射到汇编语言，如把上面的”.i”文件“翻译”成汇编代码，输出到“.s”文件。</p>
-<ul>
-<li>编译器会对源代码进行词法分析、语法分析、语义分析（类型检查、作用域检查等）、代码优化</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">gcc -S -o main.s main.i</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>汇编</strong>：将汇编语言映射到机器码，在Linux系统上一般表现为ELF目标文件(OBJ文件)。</p>
-<ul>
-<li>汇编器还会计算各种地址和指针值，生成静态数据和符号表等信息，以便在链接过程中使用</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gcc -c -o main.o main.s</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>链接</strong>：将汇编生成的一个或多个目标文件、以及库文件链接起来，最终生成可以在特定平台运行的可执行程序。</p>
-<ul>
-<li>链接器负责解析和处理目标文件中的符号表，合并静态数据和代码，解决外部引用和重定位等问题。</li>
-</ul>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gcc -o main main.o</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>动态链接：使用动态链接库(*.so)进行链接，生成的程序在执行的时候需要加载所需的动态库才能运行，动态链接生成的程序体积较小，但是必须依赖所需的动态库，否则无法执行。</li>
-<li>静态链接：使用静态库(*.a)进行链接，生成的程序包含程序运行所需要的全部库，可以直接运行，不过静态链接生成的程序体积较大。</li>
+<li>在C++中，虚拟内存分为代码段、数据段、BSS段、堆区、文件映射区以及栈区六部分。</li>
+<li>32bitCPU可寻址4G线性空间，每个进程都有各自独立的4G逻辑地址，其中0 ~ 3G是用户态空间，3 ~4G是内核空间，不同进程相同的逻辑地址会映射到不同的物理地址中。</li>
+<li>大端序和小端序<ul>
+<li>描述了多字节数据在内存中的存储顺序。不同硬件架构和操作系统可能采用不同字节序</li>
+<li>在大端序中，数据的高位字节（最重要的字节）存储在较低的内存地址中，小端序中，数据的低位字节（最不重要的字节）存储在较低的内存地址中</li>
 </ul>
 </li>
 </ul>
-<h5 id="静态库和动态库"><a href="#静态库和动态库" class="headerlink" title="静态库和动态库"></a>静态库和动态库</h5><ul>
-<li><p>文件格式：</p>
-<ul>
-<li>静态库：通常以 .lib（Windows）或 .a（Linux&#x2F;UNIX）为扩展名。</li>
-<li>动态库：通常以 .dll（Windows）或 .so（Linux&#x2F;UNIX）为扩展名。</li>
+<h4 id="C-内存的不同层面"><a href="#C-内存的不同层面" class="headerlink" title="C++内存的不同层面"></a>C++内存的不同层面</h4><ul>
+<li>标准库分配器</li>
+<li>C++函数：new、new[]、operator new()</li>
+<li>C函数库：malloc&#x2F;free</li>
 </ul>
-</li>
-<li><p>链接方式：</p>
-<ul>
-<li>静态库：在链接时与程序代码直接链接，生成的可执行文件包含了库中所有需要的代码。因此，可执行文件较大，但不需要额外的库文件。</li>
-<li>动态库：在编译时不直接链接到程序中，而是在程序运行时动态链接。生成的可执行文件不包含库中的代码，只包含对库的引用。因此，可执行文件较小，但需要库文件才能运行。</li>
+<h4 id="内存的分配方式"><a href="#内存的分配方式" class="headerlink" title="内存的分配方式"></a>内存的分配方式</h4><ul>
+<li><strong>静态内存分配</strong>： 在编译时确定内存大小和位置的分配方式。全局变量、静态变量和常量都使用静态内存分配。这些变量在程序的整个生命周期中都存在，直到程序结束。静态内存分配的优点是速度快，开销小；缺点是分配的内存大小在编译时就确定，不能在运行时改变。</li>
+<li><strong>栈内存分配</strong>： 栈内存分配是在函数调用期间为局部变量和函数参数分配内存的方式。栈内存分配由编译器自动处理，无需程序员手动管理。栈内存分配速度快，但分配的内存大小受到栈大小的限制。当函数调用结束时，分配的内存会自动释放。</li>
+<li><strong>堆内存分配</strong>： 堆内存分配是在程序运行期间动态分配和释放内存的方式。C++中，可以使用 new 和delete 操作符（或 new[] 和 delete[] 操作符）在堆上分配和释放内存。堆内存分配允许在运行时分配可变大小的内存，但分配和释放的速度相对较慢，且需要程序员手动管理内存的生命周期。不正确地管理堆内存可能导致内存泄漏或悬挂指针等问题。</li>
 </ul>
-</li>
-<li><p>代码重用与更新</p>
-<ul>
-<li>静态库：如果多个程序使用同一个静态库，每个程序都会包含库的一份拷贝。这可能导致内存和磁盘空间的浪费。另外，当静态库更新时，需要重新编译所有使用它的程序。</li>
-<li>动态库：多个程序可以共享同一份动态库，节省内存和磁盘空间。当动态库更新时，只需替换库文件，而不需要重新编译所有使用它的程序。但需要确保新版本的库与已有程序兼容。</li>
-</ul>
-</li>
-<li><p>程序加载时间</p>
-<ul>
-<li>静态库：因为所有库代码都已链接到可执行文件，程序加载时间相对较短。</li>
-<li>动态库：程序在运行时需要加载和链接动态库，这可能导致程序启动时间稍长。</li>
-</ul>
-</li>
-<li><p>跨平台兼容性</p>
-<ul>
-<li>静态库：在不同平台间迁移时，可能需要重新编译静态库以确保兼容性。</li>
-<li>动态库：更容易在不同平台间迁移，只需针对目标平台提供相应的动态库版本。</li>
-</ul>
-</li>
-<li><p>生成方式：</p>
-<ul>
-<li>静态库：编译源文件为目标（.o）文件，使用 <code>ar</code> 命令将目标文件打包为静态库</li>
-<li>动态库：编译源文件时，添加 -fPIC 标志来生成位置无关代码，使用 <code>-shared</code> 标志将目标文件链接为动态库</li>
-</ul>
-</li>
-<li><p>使用方式：</p>
-<ul>
-<li><p>静态库：需要在编译命令行中链接，例如库的名称是<code>libmylib.a</code>，则使用<code>-lmylib</code></p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">g++ main.cpp -o main -L/path/lib -lmylib</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>动态库：在运行时被加载到内存中。因此在运行程序时需要确保动态库在系统的库搜索路径中。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/path/lib:<span class="variable">$LD_LIBRARY_PATH</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-</ul>
-<p>&#x3D;&#x3D;动态库的优缺点？&#x3D;&#x3D;</p>
+<p><u>内存的静态分配和动态分配的区别？</u></p>
 <blockquote>
-<p>优点：代码重用、内存占用、更新简便、模块化、程序更具跨平台兼容性</p>
-<p>缺点：链接开销、程序依赖、安全风险、版本许可问题、调试困难</p>
+<p>分配时间：静态分配在编译时确定内存的分配；动态分配在程序运行时分配内存。</p>
+<p>生命周期：静态分配种，全局变量、静态变量和常量的生命周期在程序的整个执行期间，局部变量和函数参数的生命周期仅在函数调用期间；动态分配的内存的生命周期取决于程序员何时释放它。</p>
+<p>管理方式：静态分配的内存由编译器自动管理；动态分配的内存需要程序员手动进行分配和释放，可能导致内存泄漏或悬挂指针等问题；<br>使用场景：静态分配适用于程序运行期间固定大小的内存需求；动态分配适用于程序运行时才能确定大小的内存需求。</p>
 </blockquote>
-<h5 id="预编译指令"><a href="#预编译指令" class="headerlink" title="预编译指令"></a>预编译指令</h5><p>预处理器可以识别以 # 开头的指令。以下是一些常见的 C++ 预处理指令：</p>
-<ul>
-<li><code>#include</code>用于包含其他头文件。</li>
-<li><code>#define</code>定义宏。用于定义常量或简单的函数。</li>
-<li><code>#undef</code>：取消宏定义。移除先前使用 <code>#define</code> 定义的宏。</li>
-<li><code>#ifdef</code>、<code>#ifndef</code>、<code>#if</code>、<code>#elif</code>、<code>#else</code> 和 <code>#endif</code>：条件编译指令。根据条件包含或排除代码。</li>
-<li><code>#error</code>：生成编译时错误。当预处理器遇到 <code>#error</code> 指令时，会中止编译并显示指定的错误消息。</li>
-<li><code>#pragma</code>：编译器特定指令。用于向编译器发送特殊的命令。</li>
+<h5 id="静态区域"><a href="#静态区域" class="headerlink" title="静态区域"></a>静态区域</h5><ul>
+<li>代码段：包括只读存储区和文本区，其中只读存储区存储字符串常量，文本区存储程序的机器代码；</li>
+<li>数据段：存储程序中已初始化的全局变量和静态变量</li>
+<li>bss：存储未初始化的全局变量和静态变量（局部+全局），以及所有被初始化为0的全局变量和静态变量，对于未初始化的全局变量和静态变量，程序运行main之前时会统一清零。即未初始化的全局变量编译器会初始化为0</li>
 </ul>
-<h5 id="include"><a href="#include" class="headerlink" title="#include"></a><strong>#include</strong></h5><ul>
-<li><code>&lt;&gt;</code>表示从系统目录下开始搜索，然后再搜索PATH环境变量所列出的目录，不搜索当前目录</li>
-<li><code>&quot;&quot;</code>表示先从当前目录搜索，然后是系统目录和PATH环境变量所列出的目录下搜索</li>
-</ul>
-<h5 id="条件编译指令（-ifdef，-ifndef）"><a href="#条件编译指令（-ifdef，-ifndef）" class="headerlink" title="条件编译指令（#ifdef，#ifndef）"></a><strong>条件编译指令</strong>（#ifdef，#ifndef）</h5><ul>
-<li>通常用于头文件中的“包含保护”（include guard）机制。可以避免头文件在同一个编译单元中被多次包含，从而防止重复声明、编译错误和不必要的编译开销。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// my_header.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> MY_HEADER_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MY_HEADER_H</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 头文件的内容，如类声明、函数声明等</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// MY_HEADER_H</span></span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><code>#ifndef</code>指令检查一个名为<code>MY_HEADER_H</code>的宏是否已经定义。如果该宏尚未定义，预处理器将继续处理头文件的内容，并使用<code>#define</code>指令定义该宏。在头文件的末尾，<code>#endif</code>指令结束了包含保护。</li>
-<li>如果头文件被多次包含，<code>#ifndef</code>指令将检测到<code>MY_HEADER_H</code>已经被定义，从而跳过头文件的内容，直接到达<code>#endif</code>指令。这样一来，同一个头文件在同一个编译单元中不会被多次包含，从而避免了重复声明和其他相关问题。</li>
-</ul>
-<h5 id="define、inline、typedef"><a href="#define、inline、typedef" class="headerlink" title="define、inline、typedef"></a>define、inline、typedef</h5><p>define和inline都可以用于定义简短的函数。</p>
-<ul>
-<li><p>define</p>
-<ul>
-<li>define是C和C++中的预处理器指令，用于定义宏（macro）。</li>
-<li>使用define定义的宏在预处理阶段进行文本替换，而不是在编译阶段进行处理。</li>
-<li>宏没有作用域，它们在整个源文件中都是可见的</li>
-<li>宏不进行类型检查，容易导致潜在的错误和难以调试的问题。</li>
-</ul>
-<p>&#x3D;&#x3D;宏的优缺点&#x3D;&#x3D;</p>
+<p><u>给定一个类，里面有static、virtual等，请说一下这个类的内存分布</u></p>
 <blockquote>
-<p>优点：</p>
-<ul>
-<li><strong>提高代码重用性</strong>：宏允许定义一段代码或文本，然后在多个地方使用。这有助于减少重复代码和提高代码可维护性。</li>
-<li><strong>提高性能</strong>：宏在编译阶段进行替换，因此可以避免函数调用带来的性能开销。</li>
-<li><strong>提高编译时配置灵活性</strong>：宏可以在编译时进行条件编译，有助于控制不同编译配置下的代码生成。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li><strong>可读性和维护性</strong>：宏的使用可能导致代码可读性降低，因为宏并不遵循常规的编程语法。</li>
-<li><strong>调试困难</strong>：由于宏在编译阶段进行替换，因此在调试过程中，宏替换后的代码可能会导致找出错误变得更加困难。</li>
-<li><strong>命名冲突</strong>：宏的命名空间是全局的，这可能导致命名冲突。如果在不同的头文件或源文件中定义了相同名称的宏，可能会引发意外的替换和编译错误。</li>
-<li>类型不安全、没有作用域限制</li>
-</ul>
+<p>1、static修饰符</p>
+<p>1）static修饰成员变量：静态数据成员在全局数据区分配内存，属于本类的所有对象共享，所以它不属于特定的类对象，在没有产生类对象前就可以使用。</p>
+<p>2）static修饰成员函数： 与普通的成员函数相比，静态成员函数由于不是与任何的对象相联系，因此它不具有this指针。从这个意义上来说，它无法访问属于类对象的非静态数据成员，也无法访问非静态成员函数，只能调用其他的静态成员函数。 Static修饰的成员函数，在代码区分配内存。</p>
+<p>2、virtual修饰符</p>
+<p>如果一个类是局部变量则该类数据存储在栈区，如果一个类是通过new&#x2F;malloc动态申请的，则该类数据存储在堆区。  </p>
+<p>如果该类是virutal继承而来的子类，则该类的虚函数表指针和该类其他成员一起存储。虚函数表指针指向只读数据段中的类虚函数表，虚函数表中存放着一个个函数指针，函数指针指向代码段中的具体函数。<br>如果类中成员是virtual属性，会隐藏父类对应的属性。  </p>
 </blockquote>
+<h5 id="动态区域"><a href="#动态区域" class="headerlink" title="动态区域"></a>动态区域</h5><ul>
+<li>heap（堆）：当进程未调用malloc时是没有堆段的，只有调用malloc时采用分配一个堆，并且在程序运行过程中可以动态增加堆大小(移动break指针)，从低地址向高地址增长。分配小内存时使用该区域。堆的起始地址由mm_struct 结构体中的start_brk标识，结束地址由brk标识。</li>
+<li>memory mapping segment(映射区): 存储动态链接库等文件映射、申请大内存（malloc时调用mmap函数）</li>
+<li>stack（栈）：使用栈空间存储函数的返回地址、参数、局部变量、返回值，从高地址向低地址增长。在创建进程时会有一个最大栈大小，Linux可以通过ulimit命令查看和修改。默认大小是1M。<ul>
+<li>函数调用过程栈的变化依赖于编译器和操作系统。通常情况下入栈顺序为：参数（从后向前）、返回地址、局部变量</li>
+</ul>
 </li>
-<li><p>inline</p>
+</ul>
+<p><u>堆和栈的区别，以及为什么栈的效率更高?</u></p>
+<blockquote>
+<p>堆和栈的区别：</p>
 <ul>
-<li><code>inline</code>是C++中的一个关键字，用于建议编译器将函数声明为内联函数。</li>
-<li>内联函数在编译过程中可能被编译器直接插入到调用处，从而减少函数调用的开销。但请注意，编译器并不一定会接受这个建议，内联决策仍然由编译器自主决定。</li>
-<li>内联函数具有作用域和类型检查，比宏更安全、更健壮。</li>
+<li>地址扩展：堆是由低地址向高地址扩展；栈是由高地址向低地址扩展</li>
+<li>分配和释放：堆中的内存需要调用函数（malloc,free)手动申请和手动释放；栈中内存是由OS自动申请和自动释放，存放着参数、局部变量等内存</li>
+<li>内存碎片：堆中频繁调用malloc和free,会产生内存碎片，查找内存空间会降低内存效率；而栈由于其先进后出的特性，不会产生内存碎片</li>
+<li>访问时间：访问堆的一个具体单元，需要两次访问内存，第一次得取得指针，第二次才是真正的数据，而栈只需访问一次。另外，堆的内容被操作系统交换到外存的概率比栈大，栈一般是不会被交换出去的</li>
+<li>分配效率：堆的分配效率较低，而栈的分配效率较高</li>
+</ul>
+<p>栈的效率高的原因： 栈是操作系统提供的数据结构，计算机底层对栈提供了一系列支持：分配专门的寄存器存储栈的地址，压栈和入栈有专门的指令执行；而堆是由C&#x2F;C++函数库提供的，机制复杂，需要一些列分配内存、合并内存和释放内存的算法，因此效率较低。  </p>
+</blockquote>
+<h5 id="malloc和free实现原理"><a href="#malloc和free实现原理" class="headerlink" title="malloc和free实现原理"></a>malloc和free实现原理</h5><ul>
+<li>malloc() 和free()是 C语言库里的函数，用于动态内存分配和管理<ul>
+<li>Malloc函数用于动态分配内存。为了减少内存碎片和系统调用的开销，malloc其采用内存池的方式，先申请大块内存作为堆区，然后将堆区分为多个内存块，以块作为内存管理的基本单位。当用户申请内存时，直接从堆区分配一块合适的空闲块。</li>
+<li>当进行内存分配时，Malloc会通过隐式链表遍历所有的空闲块，选择满足要求的块进行分配；当进行内存合并时，malloc采用边界标记法，根据每个块的前后块是否已经分配来决定是否进行块合并。</li>
+<li>malloc内存分配方式：<ul>
+<li>用户分配的内存小于 128 KB，通过 brk() 系统调用从堆分配内存；<ul>
+<li>通过 brk() 函数将「堆顶」指针向高地址移动，获得新的内存空间；</li>
 </ul>
 </li>
-<li><p>typedef</p>
-<ul>
-<li>用于定义类型别名</li>
-<li>发生在编译过程中；</li>
-<li>typedef会进行数据类型检查；</li>
-<li>typedef是语句，要加分号标识结束；宏不是语句，不在在最后加分号</li>
-</ul>
-</li>
-</ul>
-<h5 id="命名空间"><a href="#命名空间" class="headerlink" title="命名空间"></a>命名空间</h5><ul>
-<li>作用：<ul>
-<li><strong>避免名称冲突</strong>：以将一组相关的类、函数和变量等组织在一起，使它们与其他名字空间中的实体互相隔离，从而避免名称冲突。</li>
-<li><strong>代码组织结构化</strong>：将相关代码逻辑组织在一起，使代码更加结构化，便于阅读和维护。</li>
-</ul>
-</li>
-<li>使用：<ul>
-<li>使用<code>using</code>关键字引入命名空间内的特定实体：<code>using my_namespace::MyClass</code>;</li>
-<li>使用<code>using namespace my_namespace </code>指令将整个名字空间导入到当前作用域</li>
+<li>用户分配的内存大于 128 KB，通过 mmap() 系统调用在文件映射区域分配内存；<ul>
+<li>通过 mmap() 系统调用中「私有匿名映射」的方式，在文件映射区分配一块内存，也就是从文件映射区“偷”了一块内存</li>
 </ul>
 </li>
 </ul>
-<h5 id="变量所占字节数"><a href="#变量所占字节数" class="headerlink" title="变量所占字节数"></a>变量所占字节数</h5><table>
-<thead>
-<tr>
-<th>变量</th>
-<th>64位</th>
-<th>32位</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>char</td>
-<td>1byte</td>
-<td>1byte</td>
-</tr>
-<tr>
-<td>char*</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>short int</td>
-<td>2byte</td>
-<td>2byte</td>
-</tr>
-<tr>
-<td>int</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>unsigned int</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>float</td>
-<td>4byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>double</td>
-<td>8byte</td>
-<td>8byte</td>
-</tr>
-<tr>
-<td>long</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-<tr>
-<td>long long</td>
-<td>8byte</td>
-<td>8byte</td>
-</tr>
-<tr>
-<td>long long</td>
-<td>8byte</td>
-<td>4byte</td>
-</tr>
-</tbody></table>
-<h5 id="extern“C”"><a href="#extern“C”" class="headerlink" title="extern“C”"></a>extern“C”</h5><p><code>extern &quot;C&quot;</code>是一个链接指定符，用于告诉C++编译器在链接时如何处理被声明的函数或变量。它的主要目的是实现C和C++之间的互操作性。  </p>
-<ul>
-<li>C++支持函数重载（在同一个作用域内使用相同的函数名，但参数列表不同）。因此C++编译器在生成目标代码时会对函数名进行<strong>名字修饰</strong>（区分函数重载、不同命名空间的同名函数、不同类的成员函数等），以便在链接时区分具有相同名称的不同函数。这个过程通常会使得函数名更长，增加一些编译器特定的字符和编码。</li>
-<li>C编译器并不支持函数重载，也不对函数名进行名字修饰。因此，当试图在C++中调用C函数或在C代码中调用C++函数时，可能会出现链接错误，因为链接器找不到正确的符号。</li>
-<li>当在C++代码中使用<code>extern &quot;C&quot;</code>声明一个函数或变量时，C++编译器会禁用名字修饰，使得函数或变量的名字与C编译器生成的名字相同。这样，在链接时就可以正确地找到符号，实现C和C++之间的互操作性。</li>
-</ul>
-<h5 id="C-中的符号重复定义问题"><a href="#C-中的符号重复定义问题" class="headerlink" title="C++中的符号重复定义问题"></a>C++中的符号重复定义问题</h5><ul>
-<li>问题发生情况：<ul>
-<li>同一个文件中重复定义了同名的全局变量、函数或类。</li>
-<li>不同文件中定义了同名的全局变量、函数或类。</li>
-<li>静态库中存在重复的符号。</li>
-<li>链接了重复的目标文件。</li>
-</ul>
 </li>
-<li>解决方法：<ul>
-<li>使用<code>#ifndef</code>&#x2F;<code>#define</code>&#x2F;<code>#endif</code>的方式避免头文件被重复包含。</li>
-<li>使用<code>namespace</code>来避免命名冲突：每个文件中的变量放在自己的namespace中。</li>
-<li>用<code>static</code>关键字将变量、函数声明为文件作用域内的局部符号。</li>
-<li>将全局变量或函数定义改为声明，将定义放在一个单独的源文件中。</li>
+<li>内存管理：<ul>
+<li>malloc得到的内存带有cookie（开销，一对cookie占用8个字节），加入开销后分配空间还需调整为16的倍数<br>malloc 使用一种链表或树形结构来管理已分配和未分配的内存块。当用户请求内存时，malloc 首先在内存管理数据结构中查找一个合适大小的空闲内存块。如果找到合适的内存块，malloc 会将其从空闲列表中移除并返回给用户。如果没有找到合适的内存块，malloc会向操作系统请求更多的内存。</li>
 </ul>
 </li>
 </ul>
-<p>&#x3D;&#x3D;编译器如何处理函数重载？&#x3D;&#x3D;</p>
+</li>
+<li>free<ul>
+<li>当调用 free 函数释放一块内存时，free 首先会根据之前 malloc 存储的元数据获取内存块的大小和位置。然后，free 会将这个内存块放回到空闲内存块列表（即内存池）中。</li>
+<li>为了减少内存碎片， free 可能会合并相邻的空闲内存块。例如，如果一个被释放的内存块和它相邻的内存块都是空闲的， free 可以将它们合并成一个更大的空闲内存块。</li>
+</ul>
+</li>
+<li>malloc 和 free 仅分配和释放内存，而不对内存内容进行初始化。在 C++ 中，new 和 delete 操作符不仅负责内存分配和释放，还负责对象的构造和析构。</li>
+<li>malloc() 分配的是虚拟内存<ul>
+<li>如果分配后的虚拟内存没有被访问的话，虚拟内存是不会映射到物理内存的，这样就不会占用物理内存；</li>
+<li>只有在访问已分配的虚拟地址空间的时候，操作系统通过查找页表，发现虚拟内存对应的页没有在物理内存中，就会触发缺页中断，然后操作系统会建立虚拟内存和物理内存之间的映射关系；</li>
+</ul>
+</li>
+</ul>
+<p><u>通过 free 释放内存后，堆内存是否存在？</u></p>
+<blockquote>
+<p>当使用 free 函数回收内存时，这些内存是否立刻还给操作系统取决于实现和操作系统。C 库实现会在内部维护一个内存池，将回收的内存加入内存池以供将来分配。</p>
+<p>在某些情况下，内存池可能会变得非常大，C 库实现可以选择将部分内存归还给操作系统。归还内存的策略取决于实现和操作系统，例如可能会基于内存使用量、空闲内存块的大小或空闲时间来决定。</p>
+<p>free 函数主要目的是将内存归还给内部的内存池，以便在后续的内存分配请求中重用。只有在特定条件下，内存才可能被归还给操作系统。</p>
+</blockquote>
+<p><u>为什么不全部使用 mmap 来分配内存？</u></p>
+<blockquote>
+<p>申请内存的操作应该避免频繁的系统调用，如果都用 mmap 来分配内存，等于每次都要执行系统调用（发生运行态的切换）。</p>
+<p>因此malloc 通过 brk() 系统调用在堆空间申请内存的时候，由于堆空间是连续的，所以直接预分配更大的内存来作为内存池，当内存释放的时候，就缓存在内存池中。</p>
+</blockquote>
+<p><u>为什么不全部使用 brk 来分配？</u></p>
+<blockquote>
+<p>通过 brk 从堆空间分配的内存，并不会归还给操作系统</p>
+<p>随着系统频繁地 malloc 和 free ，尤其对于小块内存，堆内将产生越来越多不可用的碎片，导致“内存泄露”。而这种“泄露”现象使用 valgrind 是无法检测出来的</p>
+</blockquote>
+<p><u>类如何实现只能静态分配和只能动态分配？</u></p>
+<blockquote>
+<p>只能静态分配： 要实现只能静态分配，需要禁止类对象的动态分配。这可以通过将 operator new 和operator delete 声明为私有（private）来实现。这样，类的外部代码将无法使用 new 和 delete 操作符来分配和释放类对象。</p>
+<p>只能动态分配： 要实现只能动态分配，需要禁止类对象的静态分配和栈分配。这可以通过将构造函数、拷贝构造函数、赋值运算符和析构函数声明为私有（private）来实现。  </p>
+</blockquote>
+<p><u>C++如何只将对象分配在堆上或是栈上</u></p>
 <blockquote>
 <ul>
-<li><p>重载解析（Overload Resolution）： 当在同一作用域内存在多个同名函数时，编译器需要根据调用点的参数类型和数量来确定调用哪个函数。</p>
+<li>只建立在栈上：只有使用new运算符，对象才会建立在堆上，因此，只要禁用new运算符（将该类的operator new()设为私有）就可以实现类对象只能建立在栈上。</li>
+<li>只建立在堆上：编译器在为类对象分配栈空间时, 会检查类的析构函数的访问性(其他非静态函数也会检查)，如果类的析构函数是私有的（将析构函数设为私有）， 则编程器不会在栈空间上为类对象分配内存。</li>
+</ul>
+<p>静态建立类对象 A a； ： 是由编译器为对象在栈空间中分配内存，通过移动栈顶指针挪出适当的空间，然后在这片内存空间上调用构造函数形成一个栈对象。这种方式是直接调用类的构造函数。</p>
+<p>动态建立类对象 A* ptr &#x3D; new A ；： 是用new关键字将对象建立在堆空间上，这个过程分两步。首先是执行 operator new() 函数，在堆空间上搜索合适的内存并分配；第二步是调用构造函数构造对象，初始化这片内存空间。这种方式是间接的调用类的构造函数。</p>
+</blockquote>
+<p><u>malloc、realloc、calloc的区别？</u></p>
+<blockquote>
+<p>malloc 是用于分配指定大小的内存，不进行初始化。</p>
+<p>calloc 是用于分配指定数量的指定大小的内存块，并将内存初始化为 0。</p>
+<p>realloc 是用于调整之前分配的内存块的大小，如果内存增加，新增部分不会被初始化。  </p>
+</blockquote>
+<h5 id="new与delete的实现原理"><a href="#new与delete的实现原理" class="headerlink" title="new与delete的实现原理"></a>new与delete的实现原理</h5><p>new 和 delete 是 C++ 语言中用于在堆上分配和释放内存的操作符，它们不仅负责内存管理，还负责对象的构造和析构</p>
+<ul>
+<li>使用 new 操作符创建一个对象时，分为两步骤：<ul>
+<li>operator new：new 首先会调用底层的内存分配函数（例如，malloc）来分配所需的内存。这涉及到查找一个合适的空闲内存块并将其从空闲内存块列表中移除。不同的编译器和平台可能使用不同的内存分配函数。如果分配失败会抛出bad_alloc异常</li>
+<li>placement new：在分配的内存上调用对象的构造函数，以初始化对象的状态。</li>
+</ul>
 </li>
-<li><p>名字修饰（Name Mangling）： 重载解析确定了要调用哪个函数之后，编译器需要为这些重载函数生成独特的二进制符号名。</p>
+<li>使用 delete 操作符释放一个对象时，会进行以下步骤：<ul>
+<li>对象析构：delete 首先调用对象的析构函数，以释放对象所持有的资源并清理对象的状态。</li>
+<li>内存释放：接着，delete 调用底层的内存释放函数（例如，free）将内存归还给操作系统。这涉及到将内存块放回空闲内存块列表，并可能合并相邻的空闲内存块以减少内存碎片。同样，不同的编译器和平台可能使用不同的内存释放函数。</li>
+</ul>
 </li>
+</ul>
+<p><u>delete是如何知道释放内存的大小？</u></p>
+<blockquote>
+<p>当使用 new 操作符分配内存时，内存管理子系统会在实际分配的内存块的头部包含cookies，保存一些额外的信息，例如内存块的大小。</p>
+</blockquote>
+<p><u>malloc 和 new 有什么区别？</u></p>
+<blockquote>
+<p>malloc 和 new 都用于在堆上分配内存。</p>
+<p><strong>类型安全</strong></p>
+<ul>
+<li>malloc ：返回的指针类型为 void* ，需要显式类型转换为适当的类型。</li>
+<li>new ：返回相应类型的指针，提供了类型安全。不需要显式类型转换。</li>
+</ul>
+<p><strong>内存分配</strong></p>
+<ul>
+<li>malloc ：分配内存时，需要指定所需内存的字节数。它返回一个指向分配内存的指针，或者在无法分配内存时返回 NULL 。  </li>
+<li>new ：分配内存时，无需指定字节数。它根据所需类型自动计算所需内存的大小，并返回相应类型的指针。如果无法分配内存，它会抛出 std::bad_alloc 异常（除非使用 nothrow 修饰符）。</li>
+</ul>
+<p><strong>初始化</strong></p>
+<ul>
+<li>malloc仅分配内存，不进行初始化</li>
+<li>new会在分配的内存上调用对象的构造函数</li>
 </ul>
 </blockquote>
-<h5 id="编译错误与运行时错误"><a href="#编译错误与运行时错误" class="headerlink" title="编译错误与运行时错误"></a>编译错误与运行时错误</h5><ul>
-<li>编译错误发生在编译阶段，通常是由于程序员编写的源代码不符合编程语言的规则。编译器在编译过程中会检测并报告这些错误。<ul>
-<li>如语法错误、类型不匹配、未定义的变量或函数等。</li>
-</ul>
-</li>
-<li>运行时错误发生在程序执行阶段，通常是由于程序逻辑错误、资源限制或外部输入导致的。<ul>
-<li>常见的运行时错误包括除以零、数组越界、空指针解引用、内存泄漏等。</li>
-</ul>
-</li>
-</ul>
-<h5 id="文件组织"><a href="#文件组织" class="headerlink" title="文件组织"></a>文件组织</h5><ul>
-<li><p>源文件和头文件的组织：</p>
-<ul>
-<li><p>头文件（.h或.hpp）：通常包含类声明、函数声明、常量定义、模板定义等。头文件主要用于声明接口，它告诉编译器有关这些实体的基本信息，但不包含实现细节。</p>
-</li>
-<li><p>源文件（.cpp）：包含类方法的定义、函数的定义、全局变量的定义等。源文件提供了实现细节，它们与头文件中的声明相匹配。</p>
-</li>
-</ul>
-</li>
-<li><p>编译： 对于每个源文件，编译器会单独进行编译，生成一个与源文件对应的目标文件</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>后端</category>
-        <category>C++总结</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>模板与泛型编程</title>
-    <url>/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/</url>
-    <content><![CDATA[<span id="more"></span>
-
-<ul>
-<li>在泛型编程中，<strong>在编译时</strong>就能获知类型；</li>
-<li>模板是C++中泛型编程的基础，一个模板就是一个创建类或函数的蓝图或者公式。</li>
-<li><strong>标准库算法都是函数模板，标准库容器都是类模板</strong>。</li>
-</ul>
-<h5 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h5><ul>
-<li><p>一个函数模板就是一个公式，可以用来生成针对特定类型的函数版本</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T &amp;v1,<span class="type">const</span> T &amp;v2)</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (v1 &lt; v2) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (v1 &gt; v2) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;  </span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>编译器使用<strong>推断出的模板参数</strong>来实例化出一个特定版本的函数</li>
-<li>模板参数可以是模板类型或非模板类型</li>
-</ul>
-</li>
-<li><p>主要用于创建通用的、适用于多种数据类型的函数。常用于实现独立于类型的算法，如排序、查找等（<code>std::sort</code> 和 <code>std::find</code>）。</p>
-</li>
-<li><p><strong>模板编译</strong></p>
-<ul>
-<li>当编译器遇到一个模板定义时，它并不生成代码，<strong>只有当实例化出模板的一个特定版本时，编译器才会生成代码</strong></li>
-<li>函数模板和类模板成员函数的定义通常放在头文件中</li>
-</ul>
-</li>
-</ul>
-<h5 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h5><ul>
-<li><p>编译器不能为类模板推断模板参数类型，为了使用类模板（和我们以前使用模板一样），必须在模板名后的尖括号中提供用来代替模板参数的模板实参列表</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; vec;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>当我们使用一个类模板时，必须提供额外信息即<strong>显式模板实参列表</strong>，它们被绑定到模板参数，编译器通过使用这些<strong>模板实参</strong>实例化出特定的类</li>
-</ul>
-</li>
-<li><p>主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类。</p>
-</li>
-<li><p>类模板的成员函数</p>
-<ul>
-<li><p>可以在类模板内部也可以在类模板外部定义其成员函数，定义在类模板内的成员函数被隐式声明为内联函数</p>
-<ul>
-<li>类模板成员函数的实例化：默认情况下，对于一个实例化了的类模板，其成员只有在使用时才被实例化。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>模板类的每个 static 数据成员必须有且仅有一个定义，但是，类模板的每个实例都有<strong>各自独享的</strong> static 对象</p>
-</li>
-<li><p>模板参数</p>
-<ul>
-<li>一个模板参数名的可用范围是其声明之后，至模板声明或定义结束之前；</li>
-<li>模板参数会隐藏外层作用域中声明的相同名字；</li>
-<li>与大多数其他上下文不同，在模板内不能重用模板参数名；</li>
-<li><strong>模板声明</strong>必须包含模板参数</li>
-</ul>
-</li>
-<li><p>使用类的类型成员</p>
-<ul>
-<li><p>可以通过使用作用域运算符（::）来访问 static 成员和类型成员；</p>
-</li>
-<li><p>默认情况下，C++语言假定通过作用域运算符访问的名字不是类型，因此若希望使用一个模板类型参数的类型成员，就必须显式使用 <strong>typename关键字</strong>告诉编译器该名字是一个类型而非 static 成员；</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">typename</span> T::value_type <span class="title">top</span><span class="params">(<span class="type">const</span> T&amp; c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!c.<span class="built_in">empty</span>())</span><br><span class="line">		<span class="keyword">return</span> c.<span class="built_in">back</span>();</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">typename</span> T::<span class="built_in">value_type</span>();<span class="comment">//表示值初始化的一个变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>控制实例化</p>
-<ul>
-<li><p>由于模板使用时才会进行实例化，如果在多个独立编译的源文件中都使用了相同的模板，并且提供了一样的模板参数时，每一个源文件就都会有一个该模板的实例造成额外开销。</p>
-</li>
-<li><p>解决办法，显式实例化，当编译器遇到extern声明时，它不会在本文件中生成实例化代码；将一个实例化声明为extern就表示承诺在程序其他位置有该实例化的一个非extern声明（定义）；</p>
-</li>
-<li><p>对于给定的一个实例化版本，可能有多个extern声明，但是必须只有一个定义</p>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="模板实参推断"><a href="#模板实参推断" class="headerlink" title="模板实参推断"></a>模板实参推断</h5><ul>
-<li><p>编译器确定实例化哪个函数模板的过程，编译器检查使用模板参数的实参的类型，将这些类型或值绑定到模板参数，来自动实例化一个函数版本。</p>
-</li>
-<li><p>应用于函数模板的类型转换包括以下两项（对实参进行转换）</p>
-<ul>
-<li>const 转换：可以将一个非 const 对象的引用（或指针）传递给一个 const 的引用（或指针）实参</li>
-<li>数组或函数指针转换：一个数组实参可以转换为一个指向其首元素的指针，一个函数实参可以转换为一个该函数类型的指针</li>
-<li>其他类型转换，如算数转换、派生类向基类的转换、用户定义的转换，都不能应用于函数模板</li>
-<li>如果函数参数类型不是模板参数，则对实参进行正常的类型转换</li>
-</ul>
-</li>
-<li><p>当一个模板类型参数用作多个函数形参的类型时，实参必须有相同的类型。<strong>如果推断出来的类型不匹配，调用是错误的</strong>；</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">long</span> lhg;</span><br><span class="line"><span class="built_in">compare</span>(lng, <span class="number">1024</span>);<span class="comment">//错误，不能实例化compare(long, int)</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//如果希望函数实参可以进行正常的类型转换，可以将函数模板定义为两个类型参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> B&gt;</span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">flexibleCompare</span><span class="params">(<span class="type">const</span> A &amp;v1, <span class="type">const</span> B &amp;v2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>...</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// 使用。</span></span><br><span class="line"><span class="type">long</span> lng;</span><br><span class="line"><span class="built_in">flexibleCompare</span>(lng, <span class="number">1024</span>);<span class="comment">//使用的是flexibleCompare(long, int)</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>函数模板的显式实参：显式实例化</p>
-<ul>
-<li><p>显式模板实参按由左至右的顺序与对应模板参数匹配，只有尾部（最右）参数的显式模板实参才可以忽略：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2, <span class="keyword">typename</span> T3&gt;</span><br><span class="line"><span class="function">T3 <span class="title">alternative_sum</span><span class="params">(T2,T1)</span></span>;</span><br><span class="line"><span class="comment">// 此时我们必须为三个模板参数指定实参</span></span><br><span class="line"><span class="keyword">auto</span> val3 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>&gt;(i, lng);<span class="comment">//错误，不能推断第三个模板参数</span></span><br><span class="line"><span class="keyword">auto</span> val2 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>, <span class="type">int</span>, <span class="type">long</span>&gt;(i, lng);</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p><strong>模板实参推断和引用</strong></p>
-<ul>
-<li><p>当一个函数参数是模板类型参数的一个普通（左值）引用时，只能传递一个左值（如一个变量或一个返回引用类型的表达式），实参可以是 const 类型也可以不是；</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f1</span><span class="params">(T&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f1</span>(i);	<span class="comment">//i 是一个 int；模板参数类型T是 int</span></span><br><span class="line"><span class="built_in">f1</span>(ci);	<span class="comment">//ci 是一个 const int；模板参数T是 const int</span></span><br><span class="line"><span class="built_in">f1</span>(<span class="number">5</span>);	<span class="comment">//错误：实参必须是一个左值</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>若一个函数参数是 const T&amp;，可以传递任何类型实参（一个对象、一个临时对象或一个字面常量值），当函数参数本身是 const 时，T 的类型推断结果不会是一个 const 类型，因为 const 已经是函数类型的一部分</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f2</span><span class="params">(<span class="type">const</span> T&amp;)</span></span>;	</span><br><span class="line"><span class="built_in">f2</span>(i);	<span class="comment">//i 是一个 int，模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(ci);	<span class="comment">//ci 是一个 const int，但模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(<span class="number">5</span>);	<span class="comment">//一个 const &amp; 参数可以绑定到一个右值，T 是 int</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>当一个函数参数是一个右值引用时（即形如T&amp;&amp;），可以传递给他一个右值，类型推断过程类似普通左值引用函数参数的推断过程。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f3</span><span class="params">(T&amp;&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f3</span>(<span class="number">42</span>);	<span class="comment">//实参是一个 int 类型的右值，模板参数 T 是 int</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>引用折叠和右值引用参数</p>
-<ul>
-<li>当我们将一个左值传递给函数的右值引用参数，且此<strong>右值引用指向模板类型参数时</strong>，编译器推断模板类型参数为<strong>实参的左值引用类型</strong>；</li>
-<li>当我们间接创建一个引用的引用，则这些引用形成了折叠，即X&amp; &amp;、X&amp; &amp;&amp;、X&amp;&amp; &amp; 都折叠成类型 X&amp;，类型X&amp;&amp; &amp;&amp; 折叠成 X&amp;&amp;；</li>
-</ul>
+<p><u>malloc申请的存储空间能用delete释放吗？</u></p>
 <blockquote>
-<p>注意：</p>
+<p>如果使用 delete 来释放通过 malloc 分配的内存，可能会导致未定义行为，例如：</p>
+<ul>
+<li>delete 可能尝试调用析构函数，而 malloc 分配的内存并没有调用构造函数。这可能导致程序错误，例如访问无效的资源。</li>
+<li>malloc 和 new 可能使用不同的内存管理策略，导致 delete 无法正确释放 malloc 分配的内存。</li>
+</ul>
+</blockquote>
+<h5 id="标准库分配器"><a href="#标准库分配器" class="headerlink" title="标准库分配器"></a>标准库分配器</h5><p><img src="/img/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/image-20231109170852196.png" alt="image-20231109170852196"></p>
+<ul>
+<li>设计是内存池的思想，主要目的是减少cookie开销</li>
+<li>16个指针指向16条链表，每条链表分配不同大小的内存空间，从左往右每一条链表间隔8个字节（容器的需求都会被调整为8的倍数）。在代码实现的时候，是首先申请一个大的内存块，然后在大的内存块上进行切分，所以不同链表之间会有连线。<ul>
+<li>若下一次申请的大小和已有链表相同，则共用一个链表继续向下分配，否则重新开辟；</li>
+<li>若内存剩余资源已不够申请新的链表的大小，则可以向已分配的更大的链表借用（若不存在更大的链表，则分配失败）；</li>
+</ul>
+</li>
+<li>每个链表在初始分配内存空间时会申请【nx20x2+追加量】字节的内存空间（首先考虑战备池pool中的余量），n代表第n条链表，20表示将内存最多切分成20个子内存块，2表示会申请2倍大小的内存用于战备。这些内存空间是cookie free的。<ul>
+<li>战备池（pool，即start_free和end_free夹着的部分）会被后续链表使用，从pool中切割出的区块数量永远在1-20之间；</li>
+<li>若pool的余量不足以继续使用，则将碎片划分给大小最近的链表，然后继续分配；</li>
+</ul>
+</li>
+<li>如果申请的内存大于128字节，那么就由malloc来管理（上下带cookie等开销），就不归这个分配器管理了  </li>
+<li>源码中deallocate没有free操作（源于先天设计缺陷），即只要被pool申请空间之后，就不会再还回操作系统了，而是还给负责的链表。对于一个程序来说问题不大，但是对于一台机器来说，不止运行一个程序，这是有弊端的。</li>
+</ul>
+<h5 id="浅拷贝和深拷贝"><a href="#浅拷贝和深拷贝" class="headerlink" title="浅拷贝和深拷贝"></a>浅拷贝和深拷贝</h5><ul>
+<li>浅拷贝： 浅拷贝是对对象的顶层结构进行复制，但不会复制对象内部的子对象或指针所引用的内存。换句话说，浅拷贝创建了一个新对象，这个新对象与原对象共享内部数据结构和引用。这可能会导致在一个对象上的更改影响另一个对象的情况。<ul>
+<li>假设一个包含指针成员的对象，浅拷贝会复制指针本身，而不是指针所指向的内存。这意味着拷贝后的对象与原对象共享相同的指针指向的内存。</li>
+<li>&#x3D; 是浅拷贝</li>
+</ul>
+</li>
+<li>深拷贝： 深拷贝则是对对象的整个结构进行递归复制，包括子对象和指针所引用的内存。深拷贝会创建一个与原对象完全独立的新对象。由于深拷贝创建了原对象的完整副本，对一个对象的更改不会影响另一个对象。<ul>
+<li>以包含指针成员的对象为例，深拷贝会复制指针所指向的内存，然后在新对象中创建一个新的指针指向这块新的内存。这样，拷贝后的对象与原对象在内存上完全独立。</li>
+<li>strcpy是深拷贝</li>
+</ul>
+</li>
+<li>浅拷贝通常更快、占用更少内存，但可能导致意外的副作用，例如多个对象共享同一个内部数据结构。深拷贝虽然能够创建独立的对象副本，但可能更慢，占用更多内存。</li>
+</ul>
+<h5 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a><strong>零拷贝</strong></h5><ul>
+<li>可以减少数据拷贝和共享总线操作的次数</li>
+<li>在C++中，vector的成员函数emplace_back()体现零拷贝<ul>
+<li>push_back()函数需要调用拷贝构造函数和移动构造函数</li>
+<li>emplace_back()插入的元素原地构造，不需要触发拷贝构造和移动构造，效率更高</li>
+</ul>
+</li>
+</ul>
+<h5 id="常见的内存分配-使用错误"><a href="#常见的内存分配-使用错误" class="headerlink" title="常见的内存分配&#x2F;使用错误"></a>常见的内存分配&#x2F;使用错误</h5><ul>
+<li><p>内存分配未成功，却使用它</p>
+<ul>
+<li>因此在使用内存之前检查指针是否为NULL</li>
+</ul>
+</li>
+<li><p>内存分配虽然成功，但是尚未初始化就使用它</p>
+<ul>
+<li>内存的缺省初值没有统一标准，有时候为零值</li>
+<li>无论用何种方式创建数组，都别忘了赋初值，即便是赋零值也不可省略</li>
+</ul>
+</li>
+<li><p>内存分配成功并且已经初始化，但操作越过了内存的边界</p>
+<ul>
+<li>例如在使用数组时越界</li>
+</ul>
+</li>
+<li><h5 id="栈溢出"><a href="#栈溢出" class="headerlink" title="栈溢出"></a>栈溢出</h5><ul>
+<li><p>栈溢出指的是程序向栈中某个变量中写入的字节数超过了这个变量本身所申请的字节数，因而导致栈中与其相邻的变量的值被改变。</p>
+</li>
+<li><p>栈溢出的原因</p>
+<ul>
+<li><p>局部数组过大。当函数内部的数组过大时，有可能导致堆栈溢出。</p>
+</li>
+<li><p>解决这类问题的办法有两个，一是增大栈空间,二是改用动态分配，使用堆（heap）而不是栈（stack）。</p>
+</li>
+<li><p>递归调用层次太多。递归函数在运行时会执行压栈操作，当压栈次数太多时，也会导致堆栈溢出。</p>
+</li>
+<li><p>指针或数组越界。这种情况最常见，例如进行字符串拷贝，或处理用户输入等等。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>内存溢出</strong></p>
+<ul>
+<li>指程序申请内存时，没有足够的内存供申请者使用。内存溢出就是你要的内存空间超过了系统实际分配给你的空间，此时系统相当于没法满足你的需求，就会报内存溢出的错误</li>
+<li>内存溢出的原因<ul>
+<li>内存中加载的数据量过于庞大，如一次从数据库取出过多数据</li>
+<li>集合类中有对对象的引用，使用完后未清空，使得不能回收</li>
+<li>代码中存在死循环或循环产生过多重复的对象实体</li>
+<li>使用的第三方软件中的BUG</li>
+<li>启动参数内存值设定的过小</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>内存泄漏</strong></p>
+<ul>
+<li><p>内存泄漏(memory leak)是指由于疏忽或错误造成了程序未能释放掉不再使用的内存的情况。内存泄漏并非指内存在物理上的消失，而是应用程序分配某段内存后，由于设计错误，失去了对该段内存的控制，因而造成了内存的浪费；</p>
+</li>
+<li><p>内存泄漏的分类</p>
+<ul>
+<li><p>堆内存泄漏 （Heap leak）：堆内存完成后必须通过调用对应的 free或者delete 删掉，如果程序的设计的错误导致这部分内存没有被释放，那么此后这块内存将不会被使用，就会产生Heap Leak。</p>
+</li>
+<li><p>系统资源泄露（Resource Leak）：主要指程序使用系统分配的资源比如 Bitmap,handle,SOCKET等没有使用相应的函数释放掉，导致系统资源的浪费，严重可导致系统效能降低，系统运行不稳定。</p>
+</li>
+<li><p>没有将基类的析构函数定义为虚函数。当基类指针指向子类对象时，如果基类的析构函数不是virtual，那么子类的析构函数将不会被调用，子类的资源没有正确释放，因此造成内存泄露。</p>
+</li>
+</ul>
+</li>
+<li><p>内存泄露的检测</p>
+<ul>
+<li>内存泄漏通常是由于调用了malloc&#x2F;new等内存申请的操作，但是缺少了对应的free&#x2F;delete。为了判断内存是否泄露，我们一方面可以使用linux环境下的内存泄漏检查工具Valgrind,另一方面我们在写代码时可以添加内存申请和释放的统计功能，统计当前申请和释放的内存是否一致，以此来判断内存是否泄露。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>段错误 (Segmentation fault)</strong></p>
+<ul>
+<li>段错误常常发生在访问非法内存地址的时候，例如：访问越界数组、访问空指针、访问已释放的内存等。操作系统会捕获这个异常并终止程序的执行。</li>
+</ul>
+</li>
+<li><p><strong>核心转储（coredump）</strong></p>
+<ul>
+<li>当程序异常终止时，操作系统可以将程序在异常发生时的内存映像以及其他相关信息保存到一个文件中，这个文件称为核心转储文件（coredump 文件）。通过分析这个文件，开发者可以定位程序崩溃时的上下文信息，从而帮助找出问题的根源。</li>
+</ul>
+</li>
+</ul>
+<p><u>解决 Segmentation fault 和分析 coredump 的一般步骤</u></p>
+<blockquote>
 <ol>
-<li>T&amp; ：只能传递左值；</li>
-<li>const T&amp; :可以传递任何类型；</li>
-<li>T&amp;&amp; ：可以传递左值或右值；  （T&amp;&amp;是模板类的一种形式，它<strong>不是一个右值</strong>！）</li>
+<li>编译程序时，确保启用调试信息。使用 g++ 编译器时，可以加上 -g 选项。</li>
+<li>确保操作系统配置允许生成 coredump 文件。在 Linux 系统上，可以使用 ulimit 命令设置允许生成 coredump 文件。</li>
+<li>运行程序。当程序发生 Segmentation fault 时，操作系统会生成 coredump 文件。通常，这个文件名为 core 或 core.PID （其中 PID 是进程 ID）。</li>
+<li>使用调试器（如 gdb）分析 coredump 文件。例如，可以使用命令 gdb -c corefile<br>your_program （其中 corefile 是 coredump 文件名， your_program 是可执行文件名）。  </li>
+<li>在调试器中，可以使用 backtrace （或简写 bt ）命令查看程序崩溃时的调用栈。通过分析调用栈，可以定位到导致 Segmentation fault 的代码行。</li>
+<li>根据调用栈和代码分析，找出问题的根源并修复它。可能的原因包括：数组越界访问、空指针解引用、内存泄漏、内存重复释放等。</li>
+<li>修复问题后，重新编译并运行程序，确保问题已解决。</li>
 </ol>
 </blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h5 id="模板类和模板函数的区别"><a href="#模板类和模板函数的区别" class="headerlink" title="模板类和模板函数的区别"></a>模板类和模板函数的区别</h5><ul>
-<li><p><strong>实现目标</strong></p>
+<h5 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a><strong>内存对齐</strong></h5><ul>
+<li><p>原因</p>
 <ul>
-<li><p>模板类：主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类，如 <code>std::vector&lt;T&gt;</code> </p>
-</li>
-<li><p>模板函数：主要用于创建通用的、适用于多种数据类型的函数。它们通常用于实现独立于类型的算法，如排序、查找等。例如，<code>std::sort</code> 和 <code>std::find</code> 都是模板函数。</p>
-</li>
+<li>**平台原因(移植原因)**：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
+<li><strong>性能原因</strong>：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问。</li>
 </ul>
+<blockquote>
+<p>假如没有内存对齐，数据任意存放。若一个int变量存放在从地址1开始的连续四个字节中，处理器去取数据时，要先从0地址开始读取第一个4字节块,剔除不想要的字节（0地址）,然后从地址4开始读取</p>
+<p>下一个4字节块,同样剔除不要的数据（5，6，7地址）,最后留下的两块数据合并放入寄存器。这需要做很多额外工作。</p>
+<p>eg：对int和char取 sizeof() 都为4bytes  </p>
+</blockquote>
 </li>
-<li><p>定义方式</p>
-<ul>
-<li><p>模板类使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是类定义。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    // 类的成员定义</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<li><p>规则</p>
 </li>
-<li><p>模板函数：模板函数也使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是函数定义。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">T myFunction(T a, T b) &#123;</span><br><span class="line">    // 函数实现</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
+<li><p>基本类型的对齐值就是其sizeof值;</p>
 </li>
-<li><p>使用方式</p>
-<ul>
-<li>模板类：在使用模板类时，需要为其指定类型参数。类型参数在类名之后的尖括号 <code>&lt; &gt;</code> 中提供。例如，<code>std::vector&lt;int&gt;</code> 表示一个存储 <code>int</code> 类型元素的向量。</li>
-<li>模板函数：当调用模板函数时，通常无需显式指定类型参数。编译器会根据实际参数类型自动推导出相应的模板参数类型。</li>
-</ul>
+<li><p>数据成员对齐规则：对于结构的各个成员，第一个成员位于偏移为0的位置，以后每个数据成员的偏移量必须是min(#pragma pack()指定的数，这个数据成员的自身长度) 的倍数。</p>
+</li>
+<li><p>结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对<br>齐，对齐将按照#pragma pack指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行。</p>
 </li>
 </ul>
-<h5 id="重载与函数模板"><a href="#重载与函数模板" class="headerlink" title="重载与函数模板"></a>重载与函数模板</h5><ul>
-<li>函数模板可以被另一个模板或一个普通非模板函数重载，名字相同的函数必须有不同数量或类型的参数；</li>
-<li>匹配规则：如果恰有一个函数提供比任何其他函数更好的匹配，则选择此函数，但是，如果有多个函数提供同样好的匹配，则：<ul>
-<li>如果同样好的函数中只有一个是<strong>非模板函数</strong>，则选择此函数；</li>
-<li>如果同样好的函数中没有非模板，而有多个函数模板，且其中一个模板比其他模板<strong>更特例化</strong>，则选择此模板；</li>
-<li>否则，此调用有歧义。</li>
-</ul>
-</li>
-</ul>
-<h5 id="可变参数模板"><a href="#可变参数模板" class="headerlink" title="可变参数模板"></a>可变参数模板</h5><ul>
-<li><p>一个接受可变数目参数的<strong>模板函数</strong>或<strong>模板类</strong>，可变数目的参数被称为<strong>参数包</strong>，存在两种参数包：</p>
-<ul>
-<li>模板参数包：表示零个或多个模板参数；</li>
-<li>函数参数包，表示零个或多个函数参数；</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Args是一个模板参数包，rest是一个函数参数包</span></span><br><span class="line"><span class="comment">// Args表示零个或则多个模板参数列表</span></span><br><span class="line"><span class="comment">// rest表示零个零个或者多个函数参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(<span class="type">const</span> T &amp;t, <span class="type">const</span> Args&amp;... rest)</span></span>;</span><br><span class="line"><span class="comment">// 声明了foo是一个可变参数函数模板，它有一个名为T的的类型参数，和一个名为Args的模板参数包，这个包表示零个或者多个额外的类型参数。</span></span><br><span class="line"><span class="comment">// foo函数参数列表包含一个const&amp;的参数，指向T类型，还包含一个名为rest的函数参数包。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">st1</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="type">char</span> a ;</span><br><span class="line"><span class="type">int</span> b ;</span><br><span class="line"><span class="type">short</span> c ;</span><br><span class="line">&#125;;</span><br><span class="line">St1：<span class="type">char</span>占一个字节，起始偏移为<span class="number">0</span>，<span class="type">int</span>占<span class="number">4</span>个字节，<span class="built_in">min</span>(<span class="meta">#<span class="keyword">pragma</span> pack()指定的数，这个数据成员</span></span><br><span class="line">的自身长度)=<span class="number">4</span>，所以<span class="type">int</span>按<span class="number">4</span>字节对齐，起始偏移必须为<span class="number">4</span>的倍数，所以起始偏移为<span class="number">4</span>，在<span class="type">char</span>后编译器会</span><br><span class="line">添加<span class="number">3</span>个字节的额外字节，不存放任意数据。<span class="type">short</span>占<span class="number">2</span>个字节，按<span class="number">2</span>字节对齐，起始偏移为<span class="number">8</span>，正好是<span class="number">2</span>的倍</span><br><span class="line">数，无须添加额外字节。到此规则<span class="number">1</span>的数据成员对齐结束，内存状态为：</span><br><span class="line">occc|oooo|<span class="built_in">oo</span>(c表示额外添加的字节)，共<span class="number">10</span>字节</span><br><span class="line">    </span><br><span class="line">继续进行结构本身的对齐，st1结构中最大数据成员长度为<span class="type">int</span>，占<span class="number">4</span>字节，而默认的<span class="meta">#<span class="keyword">pragma</span> pack为8，</span></span><br><span class="line">所以结果本身按照<span class="number">4</span>字节对齐，结构总大小必须为<span class="number">4</span>的倍数，需添加<span class="number">2</span>个额外字节使结构的总大小为<span class="number">12</span> 。此</span><br><span class="line">时的内存状态为</span><br><span class="line">occc|oooo|oocc，共<span class="number">12</span>字节</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> st2</span><br><span class="line">&#123;</span><br><span class="line"><span class="type">short</span> c ;</span><br><span class="line"><span class="type">char</span> a ;</span><br><span class="line"><span class="type">int</span> b ;</span><br><span class="line">&#125;;</span><br><span class="line">第一步：oo|o|oooo、第二步：oo|oc|oooo</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>可变参数函数通常是递归的，第一步调用处理包中的第一个实参，然后用剩余实参调用自身；</li>
-<li>为了终止递归，还需要定义一个非可变参数的函数。</li>
-</ul>
-</li>
-</ul>
-<h5 id="模板特例化"><a href="#模板特例化" class="headerlink" title="模板特例化"></a>模板特例化</h5><ul>
-<li><p>当我们不能（或者不希望）使用模板版本时，可以定义类或者函数模板的一个版本特例化。</p>
-</li>
-<li><p>当特例化一个函数模板时，必须为原模板中的<strong>每一个模板参数</strong>提供实参；</p>
-<ul>
-<li>为了指出正在实例化一个模板，应该使用关键字 template 后跟一个空尖括号对（&lt;&gt;）,指出将为原模板所有模板参数提供实参。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T&amp;, <span class="type">const</span> T&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//compare 的特殊版本，处理字符数组的指针</span></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p1, <span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">strcmp</span>(p1, p2);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>特例化的本质是实例化一个模板，而非重载，因此特例化不影响函数匹配；</li>
-</ul>
-</li>
-<li><p>类模板的特例化不必为所有模板参数提供实参，可以只指定一部分而非所有模板参数，或是参数的一部分而非全部特性；</p>
-<ul>
-<li>我们只能部分特例化<strong>类模板</strong>，而不能部分特例化<strong>函数模板</strong>；</li>
-<li>一个类模板的部分特例化本身也是一个模板，使用它的用户还必须为那么特例化中未指定的模板参数提供实参。</li>
-</ul>
-</li>
-</ul>
-<h5 id="OOP-vs-GP"><a href="#OOP-vs-GP" class="headerlink" title="OOP vs. GP"></a>OOP vs. GP</h5><ul>
-<li><p>object-oriented programming and generic programming, 面对对象编程与泛型编程</p>
-<ul>
-<li><p>OOP企图将data和methods放在一起; </p>
-</li>
-<li><p>GP却将data和methods分开：<strong>算法</strong>通过<strong>迭代器</strong>操作<strong>容器</strong>数据;</p>
-</li>
+<li>结构体内存对齐<ul>
+<li>结构体内成员按照声明顺序存储，第一个成员地址和整个结构体地址相同。</li>
+<li>c++11以后引入两个关键字 alignas 与 alignof 。其中 alignof 可以计算出类型的对齐方式， alignas 可以指定结构体的对齐方式。</li>
 </ul>
 </li>
 </ul>
@@ -2330,6 +2105,214 @@
 </ul>
 </li>
 <li><p>编译： 对于每个源文件，编译器会单独进行编译，生成一个与源文件对应的目标文件</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>后端</category>
+        <category>C++总结</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>模板与泛型编程</title>
+    <url>/2023/11/08/%E6%A8%A1%E6%9D%BF%E4%B8%8E%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B/</url>
+    <content><![CDATA[<span id="more"></span>
+
+<ul>
+<li>在泛型编程中，<strong>在编译时</strong>就能获知类型；</li>
+<li>模板是C++中泛型编程的基础，一个模板就是一个创建类或函数的蓝图或者公式。</li>
+<li><strong>标准库算法都是函数模板，标准库容器都是类模板</strong>。</li>
+</ul>
+<h5 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h5><ul>
+<li><p>一个函数模板就是一个公式，可以用来生成针对特定类型的函数版本</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T &amp;v1,<span class="type">const</span> T &amp;v2)</span> </span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (v1 &lt; v2) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (v1 &gt; v2) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;  </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译器使用<strong>推断出的模板参数</strong>来实例化出一个特定版本的函数</li>
+<li>模板参数可以是模板类型或非模板类型</li>
+</ul>
+</li>
+<li><p>主要用于创建通用的、适用于多种数据类型的函数。常用于实现独立于类型的算法，如排序、查找等（<code>std::sort</code> 和 <code>std::find</code>）。</p>
+</li>
+<li><p><strong>模板编译</strong></p>
+<ul>
+<li>当编译器遇到一个模板定义时，它并不生成代码，<strong>只有当实例化出模板的一个特定版本时，编译器才会生成代码</strong></li>
+<li>函数模板和类模板成员函数的定义通常放在头文件中</li>
+</ul>
+</li>
+</ul>
+<h5 id="类模板"><a href="#类模板" class="headerlink" title="类模板"></a>类模板</h5><ul>
+<li><p>编译器不能为类模板推断模板参数类型，为了使用类模板（和我们以前使用模板一样），必须在模板名后的尖括号中提供用来代替模板参数的模板实参列表</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">vector&lt;<span class="type">int</span>&gt; vec;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当我们使用一个类模板时，必须提供额外信息即<strong>显式模板实参列表</strong>，它们被绑定到模板参数，编译器通过使用这些<strong>模板实参</strong>实例化出特定的类</li>
+</ul>
+</li>
+<li><p>主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类。</p>
+</li>
+<li><p>类模板的成员函数</p>
+<ul>
+<li><p>可以在类模板内部也可以在类模板外部定义其成员函数，定义在类模板内的成员函数被隐式声明为内联函数</p>
+<ul>
+<li>类模板成员函数的实例化：默认情况下，对于一个实例化了的类模板，其成员只有在使用时才被实例化。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>模板类的每个 static 数据成员必须有且仅有一个定义，但是，类模板的每个实例都有<strong>各自独享的</strong> static 对象</p>
+</li>
+<li><p>模板参数</p>
+<ul>
+<li>一个模板参数名的可用范围是其声明之后，至模板声明或定义结束之前；</li>
+<li>模板参数会隐藏外层作用域中声明的相同名字；</li>
+<li>与大多数其他上下文不同，在模板内不能重用模板参数名；</li>
+<li><strong>模板声明</strong>必须包含模板参数</li>
+</ul>
+</li>
+<li><p>使用类的类型成员</p>
+<ul>
+<li><p>可以通过使用作用域运算符（::）来访问 static 成员和类型成员；</p>
+</li>
+<li><p>默认情况下，C++语言假定通过作用域运算符访问的名字不是类型，因此若希望使用一个模板类型参数的类型成员，就必须显式使用 <strong>typename关键字</strong>告诉编译器该名字是一个类型而非 static 成员；</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">typename</span> T::value_type <span class="title">top</span><span class="params">(<span class="type">const</span> T&amp; c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!c.<span class="built_in">empty</span>())</span><br><span class="line">		<span class="keyword">return</span> c.<span class="built_in">back</span>();</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">typename</span> T::<span class="built_in">value_type</span>();<span class="comment">//表示值初始化的一个变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>控制实例化</p>
+<ul>
+<li><p>由于模板使用时才会进行实例化，如果在多个独立编译的源文件中都使用了相同的模板，并且提供了一样的模板参数时，每一个源文件就都会有一个该模板的实例造成额外开销。</p>
+</li>
+<li><p>解决办法，显式实例化，当编译器遇到extern声明时，它不会在本文件中生成实例化代码；将一个实例化声明为extern就表示承诺在程序其他位置有该实例化的一个非extern声明（定义）；</p>
+</li>
+<li><p>对于给定的一个实例化版本，可能有多个extern声明，但是必须只有一个定义</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板实参推断"><a href="#模板实参推断" class="headerlink" title="模板实参推断"></a>模板实参推断</h5><ul>
+<li><p>编译器确定实例化哪个函数模板的过程，编译器检查使用模板参数的实参的类型，将这些类型或值绑定到模板参数，来自动实例化一个函数版本。</p>
+</li>
+<li><p>应用于函数模板的类型转换包括以下两项（对实参进行转换）</p>
+<ul>
+<li>const 转换：可以将一个非 const 对象的引用（或指针）传递给一个 const 的引用（或指针）实参</li>
+<li>数组或函数指针转换：一个数组实参可以转换为一个指向其首元素的指针，一个函数实参可以转换为一个该函数类型的指针</li>
+<li>其他类型转换，如算数转换、派生类向基类的转换、用户定义的转换，都不能应用于函数模板</li>
+<li>如果函数参数类型不是模板参数，则对实参进行正常的类型转换</li>
+</ul>
+</li>
+<li><p>当一个模板类型参数用作多个函数形参的类型时，实参必须有相同的类型。<strong>如果推断出来的类型不匹配，调用是错误的</strong>；</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">long</span> lhg;</span><br><span class="line"><span class="built_in">compare</span>(lng, <span class="number">1024</span>);<span class="comment">//错误，不能实例化compare(long, int)</span></span><br><span class="line">    </span><br><span class="line"><span class="comment">//如果希望函数实参可以进行正常的类型转换，可以将函数模板定义为两个类型参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> A, <span class="keyword">typename</span> B&gt;</span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">flexibleCompare</span><span class="params">(<span class="type">const</span> A &amp;v1, <span class="type">const</span> B &amp;v2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>...</span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// 使用。</span></span><br><span class="line"><span class="type">long</span> lng;</span><br><span class="line"><span class="built_in">flexibleCompare</span>(lng, <span class="number">1024</span>);<span class="comment">//使用的是flexibleCompare(long, int)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数模板的显式实参：显式实例化</p>
+<ul>
+<li><p>显式模板实参按由左至右的顺序与对应模板参数匹配，只有尾部（最右）参数的显式模板实参才可以忽略：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T1, <span class="keyword">typename</span> T2, <span class="keyword">typename</span> T3&gt;</span><br><span class="line"><span class="function">T3 <span class="title">alternative_sum</span><span class="params">(T2,T1)</span></span>;</span><br><span class="line"><span class="comment">// 此时我们必须为三个模板参数指定实参</span></span><br><span class="line"><span class="keyword">auto</span> val3 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>&gt;(i, lng);<span class="comment">//错误，不能推断第三个模板参数</span></span><br><span class="line"><span class="keyword">auto</span> val2 = <span class="built_in">alternative_sum</span>&lt;<span class="type">long</span> <span class="type">long</span>, <span class="type">int</span>, <span class="type">long</span>&gt;(i, lng);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>模板实参推断和引用</strong></p>
+<ul>
+<li><p>当一个函数参数是模板类型参数的一个普通（左值）引用时，只能传递一个左值（如一个变量或一个返回引用类型的表达式），实参可以是 const 类型也可以不是；</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f1</span><span class="params">(T&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f1</span>(i);	<span class="comment">//i 是一个 int；模板参数类型T是 int</span></span><br><span class="line"><span class="built_in">f1</span>(ci);	<span class="comment">//ci 是一个 const int；模板参数T是 const int</span></span><br><span class="line"><span class="built_in">f1</span>(<span class="number">5</span>);	<span class="comment">//错误：实参必须是一个左值</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若一个函数参数是 const T&amp;，可以传递任何类型实参（一个对象、一个临时对象或一个字面常量值），当函数参数本身是 const 时，T 的类型推断结果不会是一个 const 类型，因为 const 已经是函数类型的一部分</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f2</span><span class="params">(<span class="type">const</span> T&amp;)</span></span>;	</span><br><span class="line"><span class="built_in">f2</span>(i);	<span class="comment">//i 是一个 int，模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(ci);	<span class="comment">//ci 是一个 const int，但模板参数 T 是 int</span></span><br><span class="line"><span class="built_in">f2</span>(<span class="number">5</span>);	<span class="comment">//一个 const &amp; 参数可以绑定到一个右值，T 是 int</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当一个函数参数是一个右值引用时（即形如T&amp;&amp;），可以传递给他一个右值，类型推断过程类似普通左值引用函数参数的推断过程。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="function"><span class="type">void</span> <span class="title">f3</span><span class="params">(T&amp;&amp;)</span></span>;</span><br><span class="line"><span class="built_in">f3</span>(<span class="number">42</span>);	<span class="comment">//实参是一个 int 类型的右值，模板参数 T 是 int</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>引用折叠和右值引用参数</p>
+<ul>
+<li>当我们将一个左值传递给函数的右值引用参数，且此<strong>右值引用指向模板类型参数时</strong>，编译器推断模板类型参数为<strong>实参的左值引用类型</strong>；</li>
+<li>当我们间接创建一个引用的引用，则这些引用形成了折叠，即X&amp; &amp;、X&amp; &amp;&amp;、X&amp;&amp; &amp; 都折叠成类型 X&amp;，类型X&amp;&amp; &amp;&amp; 折叠成 X&amp;&amp;；</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<ol>
+<li>T&amp; ：只能传递左值；</li>
+<li>const T&amp; :可以传递任何类型；</li>
+<li>T&amp;&amp; ：可以传递左值或右值；  （T&amp;&amp;是模板类的一种形式，它<strong>不是一个右值</strong>！）</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板类和模板函数的区别"><a href="#模板类和模板函数的区别" class="headerlink" title="模板类和模板函数的区别"></a>模板类和模板函数的区别</h5><ul>
+<li><p><strong>实现目标</strong></p>
+<ul>
+<li><p>模板类：主要用于创建具有通用数据成员和成员函数的类。通过参数化类型，模板类可以在多种类型之间复用相同的代码。常见的例子是容器类，如 <code>std::vector&lt;T&gt;</code> </p>
+</li>
+<li><p>模板函数：主要用于创建通用的、适用于多种数据类型的函数。它们通常用于实现独立于类型的算法，如排序、查找等。例如，<code>std::sort</code> 和 <code>std::find</code> 都是模板函数。</p>
+</li>
+</ul>
+</li>
+<li><p>定义方式</p>
+<ul>
+<li><p>模板类使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是类定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">class MyClass &#123;</span><br><span class="line">    // 类的成员定义</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>模板函数：模板函数也使用 <code>template</code> 关键字和尖括号 <code>&lt; &gt;</code> 来定义类型参数。类型参数紧跟在 <code>template</code> 关键字之后，然后是函数定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">template &lt;typename T&gt;</span><br><span class="line">T myFunction(T a, T b) &#123;</span><br><span class="line">    // 函数实现</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>使用方式</p>
+<ul>
+<li>模板类：在使用模板类时，需要为其指定类型参数。类型参数在类名之后的尖括号 <code>&lt; &gt;</code> 中提供。例如，<code>std::vector&lt;int&gt;</code> 表示一个存储 <code>int</code> 类型元素的向量。</li>
+<li>模板函数：当调用模板函数时，通常无需显式指定类型参数。编译器会根据实际参数类型自动推导出相应的模板参数类型。</li>
+</ul>
+</li>
+</ul>
+<h5 id="重载与函数模板"><a href="#重载与函数模板" class="headerlink" title="重载与函数模板"></a>重载与函数模板</h5><ul>
+<li>函数模板可以被另一个模板或一个普通非模板函数重载，名字相同的函数必须有不同数量或类型的参数；</li>
+<li>匹配规则：如果恰有一个函数提供比任何其他函数更好的匹配，则选择此函数，但是，如果有多个函数提供同样好的匹配，则：<ul>
+<li>如果同样好的函数中只有一个是<strong>非模板函数</strong>，则选择此函数；</li>
+<li>如果同样好的函数中没有非模板，而有多个函数模板，且其中一个模板比其他模板<strong>更特例化</strong>，则选择此模板；</li>
+<li>否则，此调用有歧义。</li>
+</ul>
+</li>
+</ul>
+<h5 id="可变参数模板"><a href="#可变参数模板" class="headerlink" title="可变参数模板"></a>可变参数模板</h5><ul>
+<li><p>一个接受可变数目参数的<strong>模板函数</strong>或<strong>模板类</strong>，可变数目的参数被称为<strong>参数包</strong>，存在两种参数包：</p>
+<ul>
+<li>模板参数包：表示零个或多个模板参数；</li>
+<li>函数参数包，表示零个或多个函数参数；</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Args是一个模板参数包，rest是一个函数参数包</span></span><br><span class="line"><span class="comment">// Args表示零个或则多个模板参数列表</span></span><br><span class="line"><span class="comment">// rest表示零个零个或者多个函数参数。</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">foo</span><span class="params">(<span class="type">const</span> T &amp;t, <span class="type">const</span> Args&amp;... rest)</span></span>;</span><br><span class="line"><span class="comment">// 声明了foo是一个可变参数函数模板，它有一个名为T的的类型参数，和一个名为Args的模板参数包，这个包表示零个或者多个额外的类型参数。</span></span><br><span class="line"><span class="comment">// foo函数参数列表包含一个const&amp;的参数，指向T类型，还包含一个名为rest的函数参数包。</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可变参数函数通常是递归的，第一步调用处理包中的第一个实参，然后用剩余实参调用自身；</li>
+<li>为了终止递归，还需要定义一个非可变参数的函数。</li>
+</ul>
+</li>
+</ul>
+<h5 id="模板特例化"><a href="#模板特例化" class="headerlink" title="模板特例化"></a>模板特例化</h5><ul>
+<li><p>当我们不能（或者不希望）使用模板版本时，可以定义类或者函数模板的一个版本特例化。</p>
+</li>
+<li><p>当特例化一个函数模板时，必须为原模板中的<strong>每一个模板参数</strong>提供实参；</p>
+<ul>
+<li>为了指出正在实例化一个模板，应该使用关键字 template 后跟一个空尖括号对（&lt;&gt;）,指出将为原模板所有模板参数提供实参。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> T&amp;, <span class="type">const</span> T&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//compare 的特殊版本，处理字符数组的指针</span></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">compare</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p1, <span class="type">const</span> <span class="type">char</span>* <span class="type">const</span> &amp;p2)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">strcmp</span>(p1, p2);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>特例化的本质是实例化一个模板，而非重载，因此特例化不影响函数匹配；</li>
+</ul>
+</li>
+<li><p>类模板的特例化不必为所有模板参数提供实参，可以只指定一部分而非所有模板参数，或是参数的一部分而非全部特性；</p>
+<ul>
+<li>我们只能部分特例化<strong>类模板</strong>，而不能部分特例化<strong>函数模板</strong>；</li>
+<li>一个类模板的部分特例化本身也是一个模板，使用它的用户还必须为那么特例化中未指定的模板参数提供实参。</li>
+</ul>
+</li>
+</ul>
+<h5 id="OOP-vs-GP"><a href="#OOP-vs-GP" class="headerlink" title="OOP vs. GP"></a>OOP vs. GP</h5><ul>
+<li><p>object-oriented programming and generic programming, 面对对象编程与泛型编程</p>
+<ul>
+<li><p>OOP企图将data和methods放在一起; </p>
+</li>
+<li><p>GP却将data和methods分开：<strong>算法</strong>通过<strong>迭代器</strong>操作<strong>容器</strong>数据;</p>
+</li>
+</ul>
 </li>
 </ul>
 ]]></content>
